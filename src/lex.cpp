@@ -80,7 +80,21 @@ int main(int argc, char *argv[])
                 }
                 output_file << "NAME "
                     << line.substr(name_begin, i-name_begin) << std::endl;
+                continue;
             }
+
+            // NUMBER
+            if ((line[i] >= '0') && (line[i] <= '9'))
+            {
+                size_t num = i;
+                for (++i; i < line.size(); ++i)
+                {
+                    if (!((line[i] >= '0') && (line[i] <= '9')))
+                        break;
+                }
+                output_file << "NUMBER " << line.substr(num, i-num) << std::endl;
+            }
+
             else
             {
                 std::cerr << "LINE " << line_no
