@@ -1,0 +1,23 @@
+// a comment
+module middle;
+
+   wire s0, s1, clk;
+
+   evl_clock(clk);
+
+   evl_dff(s0, s1, clk);
+
+   not(s1, s0);
+
+   and(s1, s0);
+
+   nor(s1, s0);
+
+   12345678;
+   
+   9876543210;
+   
+   wire t0, t1, pwm;
+
+   or(to, t1);
+endmodule
