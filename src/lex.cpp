@@ -1,6 +1,7 @@
 #include <iostream>
 #include <fstream>
 #include <string>
+#include <list>
 
 int main(int argc, char *argv[])
 {
@@ -103,6 +104,15 @@ int main(int argc, char *argv[])
             }
         }
     }
+
+    struct evl_token {
+        enum token_type {NAME, NUMBER, SINGLE};
+        token_type type;
+        std::string str;
+        int line_no;
+    }; // struct evl_token
+
+    typedef std::list<evl_token> evl_tokens;
 
     return 0;
 }
