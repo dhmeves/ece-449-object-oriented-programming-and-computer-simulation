@@ -322,7 +322,7 @@ bool process_wire_statement(evl_wires &wires, evl_statement &s) {
 
 */ 
 
-int old_main(int argc, char *argv[])
+int main(int argc, char *argv[])
 {
     if (argc < 2)
     {
@@ -427,7 +427,7 @@ int old_main(int argc, char *argv[])
     return 0;
 }
 
-int main(int argc, char *argv[]) {
+int new_main(int argc, char *argv[]) {
     if (argc < 2) {
         std::cerr << "You should provide a file name." << std::endl;
         return -1;
