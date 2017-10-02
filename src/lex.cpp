@@ -1,4 +1,4 @@
-#include <lex.hpp>
+#include <src/lex.hpp>
 
 struct evl_token {
     enum token_type {NAME, NUMBER, SINGLE};
