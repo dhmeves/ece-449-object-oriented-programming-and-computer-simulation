@@ -119,23 +119,22 @@ bool extract_tokens_from_line(std::string line, int line_no, std::vector<evl_tok
     return true; // nothing left
 }
 
-void display_tokens(std::vector<evl_token> tokens) {
-    //... // implementation omitted
+void display_tokens(std::ostream &out, const std::vector<evl_token> &tokens) {
     for (size_t i = 0; i < tokens.size(); ++i) {
         if (tokens[i].type == evl_token::SINGLE) {
-            std::cout << "SINGLE " << tokens[i].str << std::endl;
+            out << "SINGLE " << tokens[i].str << std::endl;
         }
         else if (tokens[i].type == evl_token::NAME) {
-            std::cout << "NAME " << tokens[i].str << std::endl;
+            out << "NAME " << tokens[i].str << std::endl;
         }
         else { // must be NUMBER
-            std::cout << "NUMBER " << tokens[i].str << std::endl;
+            out << "NUMBER " << tokens[i].str << std::endl;
         }
     }
 }
 
-bool store_tokens_to_file(std::string file_name, std::vector<evl_token> tokens) {
-    std::ofstream output_file(file_name);
+bool store_tokens_to_file(std::string file_name, const std::vector<evl_token> &tokens) {
+    std::ofstream output_file(file_name.c_str());
     //... // verify output_file is ready
     if (!output_file)
     {
@@ -143,17 +142,7 @@ bool store_tokens_to_file(std::string file_name, std::vector<evl_token> tokens) 
         return -1;
     }
     // almost the same loop as display_tokens
-    for (size_t i = 0; i < tokens.size(); ++i) {
-        if (tokens[i].type == evl_token::SINGLE) {
-            output_file << "SINGLE " << tokens[i].str << std::endl;
-        }
-        else if (tokens[i].type == evl_token::NAME) {
-            output_file << "NAME " << tokens[i].str << std::endl;
-        }
-        else { // must be NUMBER
-            output_file << "NUMBER " << tokens[i].str << std::endl;
-        }
-    }
+    display_tokens(output_file, tokens);
     return true;
 }
 
@@ -163,23 +152,32 @@ struct evl_statement {
     evl_tokens tokens;
 }; // struct evl_statement
 
-/*
-    //... // verify that argv[1] exists
-    std::string evl_file = argv[1];
-    evl_tokens tokens;
-    if (!extract_tokens_from_file(evl_file, tokens)) {
-        return -1;
+bool token_is_semicolon(const evl_token &token) {
+    return token.str == ";";
+}
+
+bool has_semicolon(const std::vector<evl_token> &tokens) {
+    auto next_sc = std::find_if(tokens.begin(), tokens.end(), 
+        [](const evl_token &token) {
+            return token.str == ";";
+    });
+    
+    return next_sc != tokens.end();
+}
+
+void remove_all_zeros(std::list<int> &integers) {
+    auto to_be_erased = std::remove_if(
+        integers.begin(), integers.end(),
+        [](int k) {return k == 0;});
+    integers.erase(to_be_erased, integers.end());
+}
+
+void show_vector(const std::vector<int> &vec) {
+    for (size_t i = 1; i <= vec.size(); ++i) {
+        assert(i < vec.size());
+        std::cout << vec[i] << std::endl;
     }
-    display_tokens(tokens);
-    if (!store_tokens_to_file(evl_file+".tokens", tokens)) {
-        return -1;
-    }
-    evl_statements statements;
-    if (!group_tokens_into_statements(statements, tokens)) {
-        return -1;
-    }
-    display_statements(statements);
-*/
+}
 
 bool group_tokens_into_statements(evl_statements &statements, evl_tokens &tokens) {
     for (; !tokens.empty();) { // generate one statement per iteration
@@ -324,7 +322,7 @@ bool process_wire_statement(evl_wires &wires, evl_statement &s) {
 
 */ 
 
-int main(int argc, char *argv[])
+int old_main(int argc, char *argv[])
 {
     if (argc < 2)
     {
@@ -426,5 +424,23 @@ int main(int argc, char *argv[])
         }
     }
 
+    return 0;
+}
+
+int main(int argc, char *argv[]) {
+    if (argc < 2) {
+        std::cerr << "You should provide a file name." << std::endl;
+        return -1;
+    }
+    //... // verify that argv[1] exists
+    std::string evl_file = argv[1];
+    std::vector<evl_token> tokens;
+    if (!extract_tokens_from_file(evl_file, tokens)) {
+        return -1;
+    }
+    display_tokens(std::cout, tokens); // why we need it?
+    if (!store_tokens_to_file(evl_file+".tokens", tokens)) {
+        return -1;
+    }
     return 0;
 }
