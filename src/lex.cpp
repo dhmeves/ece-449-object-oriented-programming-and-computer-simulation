@@ -34,7 +34,10 @@ bool is_character_a_number(char ch) {
 }
 
 bool is_character_a_alpha_num_space_dollar(char ch) {
-    return isalpha(ch) || is_character_a_number(ch) || is_character_a_space(ch) || (ch == '$');
+    return ((ch >= 'a') && (ch <= 'z'))
+        || ((ch >= 'A') && (ch <= 'Z'))
+        || ((ch >= '0') && (ch <= '9'))
+        || (ch == '_') || (ch == '$');
 }
  
 bool extract_tokens_from_file(std::string file_name, std::vector<evl_token> &tokens) { // use reference to modify it
@@ -67,19 +70,21 @@ bool extract_tokens_from_line(std::string line, int line_no, std::vector<evl_tok
             break; // skip the rest of the line by exiting the loop
         }
         // spaces
-        else if (is_character_a_space(line[i])) {
+        if (is_character_a_space(line[i])) {
             ++i; // skip this space character
             continue; // skip the rest of the iteration
         }
         // SINGLE
-        else if (is_character_a_single(line[i])) {
+        if (is_character_a_single(line[i])) {
             evl_token token;
             token.line_no = line_no;
             token.type = evl_token::SINGLE;
             token.str = std::string(1, line[i]);
             tokens.push_back(token);
+            ++i;
+            continue;
         }
-        else if (isalpha(line[i]) || (line[i] == '_')) {
+        if (isalpha(line[i]) || (line[i] == '_')) {
         //... // a NAME token
             size_t name_begin = i;
             for (++i; i < line.size(); ++i)
@@ -93,6 +98,7 @@ bool extract_tokens_from_line(std::string line, int line_no, std::vector<evl_tok
             token.type = evl_token::NAME;
             token.str = line.substr(name_begin, i-name_begin);
             tokens.push_back(token);
+            continue;
         }
         //... // NUMBER token and error handling
         // NUMBER
@@ -340,7 +346,7 @@ bool process_wire_statement(evl_wires &wires, evl_statement &s) {
     std::string output_file_name = std::string(argv[1])+".tokens";
     std::ofstream output_file(output_file_name);
     if (!output_file)
-    {
+    
         std::cerr << "I can't write " << argv[1] << ".tokens ." << std::endl;
         return -1;
     }
@@ -442,13 +448,13 @@ int main(int argc, char *argv[]) {
     if (!store_tokens_to_file(evl_file+".tokens", tokens)) {
         return -1;
     }
-    evl_tokens token_list;
+/*    evl_tokens token_list;
     std::copy(tokens.begin(), tokens.end(), std::back_inserter(token_list));
     evl_statements statements;
     if (!group_tokens_into_statements(statements, token_list)) {
         return -1;
     }
     //display_statements(statements);
-
+*/
     return 0;
 }
