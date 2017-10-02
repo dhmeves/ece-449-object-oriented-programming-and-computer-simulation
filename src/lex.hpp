@@ -5,6 +5,7 @@
 #include <list>
 #include <assert.h>
 #include <algorithm>
+#include <iterator>
 
 bool is_character_a_comment(char ch);
    

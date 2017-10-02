@@ -448,13 +448,15 @@ int main(int argc, char *argv[]) {
     if (!store_tokens_to_file(evl_file+".tokens", tokens)) {
         return -1;
     }
-/*    evl_tokens token_list;
+    evl_tokens token_list;
     std::copy(tokens.begin(), tokens.end(), std::back_inserter(token_list));
+    for (auto v : token_list)
+        std::cout << v.str << "\n";
+
     evl_statements statements;
     if (!group_tokens_into_statements(statements, token_list)) {
         return -1;
     }
     //display_statements(statements);
-*/
     return 0;
 }
