@@ -1,4 +1,4 @@
-#include <src/lex.hpp>
+#include "lex.hpp"
 
 struct evl_token {
     enum token_type {NAME, NUMBER, SINGLE};
@@ -6,9 +6,38 @@ struct evl_token {
     std::string str;
     int line_no;
 }; // struct evl_token
-     
-bool extract_tokens_from_file(std::string file_name,
-    std::vector<evl_token> &tokens) { // use reference to modify it
+
+bool is_character_a_comment(char ch) {
+    return (ch == '/');
+}    
+
+bool is_character_a_space(char ch) {
+    return (ch == ' ') || (ch == '\t')
+        || (ch == '\r') || (ch == '\n');
+}
+
+bool is_character_a_single(char ch) {
+    return (ch == '(') || (ch == ')')
+        || (ch == '[') || (ch == ']')
+        || (ch == ':') || (ch == ';')
+        || (ch == ','); 
+}
+
+bool is_character_a_name(char ch) {
+    return ((ch >= 'a') && (ch <= 'z'))    // a to z
+        || ((ch >= 'A') && (ch <= 'Z'))    // A to Z
+        || (ch == '_'); 
+}
+
+bool is_character_a_number(char ch) {
+    return ((ch >= '0') && (ch <= '9'));
+}
+
+bool is_character_a_alpha_num_space_dollar(char ch) {
+    return isalpha(ch) || is_character_a_number(ch) || is_character_a_space(ch) || (ch == '$');
+}
+ 
+bool extract_tokens_from_file(std::string file_name, std::vector<evl_token> &tokens) { // use reference to modify it
     std::ifstream input_file(file_name);
     if (!input_file) {
         std::cerr << "I can’t read " << file_name << "." << std::endl;
@@ -24,19 +53,41 @@ bool extract_tokens_from_file(std::string file_name,
     return true;
 }
 
-bool extract_tokens_from_line(std::string line, int line_no,
-    std::vector<evl_token> &tokens) { // use reference to modify it
+bool extract_tokens_from_line(std::string line, int line_no, std::vector<evl_token> &tokens) { // use reference to modify it
     for (size_t i = 0; i < line.size();) {
         //... // comments and spaces
-        else if ((line[i] == ’(’) || (line[i] == ’)’) ... ) {
+        if (is_character_a_comment(line[i])) {
+            ++i;
+            if ((i == line.size()) || (line[i] != '/'))
+            {
+                std::cerr << "LINE " << line_no
+                    << ": a single / is not allowed" << std::endl;
+                return -1;
+            }
+            break; // skip the rest of the line by exiting the loop
+        }
+        // spaces
+        else if (is_character_a_space(line[i])) {
+            ++i; // skip this space character
+            continue; // skip the rest of the iteration
+        }
+        // SINGLE
+        else if (is_character_a_single(line[i])) {
             evl_token token;
             token.line_no = line_no;
             token.type = evl_token::SINGLE;
             token.str = std::string(1, line[i]);
             tokens.push_back(token);
         }
-        else if (isalpha(line[i]) || (line[i] == ’_’) ... ) {
+        else if (isalpha(line[i]) || (line[i] == '_')) {
         //... // a NAME token
+            size_t name_begin = i;
+            for (++i; i < line.size(); ++i)
+            {
+                if (!is_character_a_alpha_num_space_dollar(line[i])) {
+                    break; // [name_begin, i) is the range for the token
+                }
+            }
             evl_token token;
             token.line_no = line_no;
             token.type = evl_token::NAME;
@@ -44,6 +95,26 @@ bool extract_tokens_from_line(std::string line, int line_no,
             tokens.push_back(token);
         }
         //... // NUMBER token and error handling
+        // NUMBER
+        if (is_character_a_number(line[i])) {
+            size_t num = i;
+            for (++i; i < line.size(); ++i)
+            {
+               if (!is_character_a_number(line[i]))
+                   break;
+            }
+            evl_token token;
+            token.line_no = line_no;
+            token.type = evl_token::NUMBER;
+            token.str = line.substr(num, i-num);
+            tokens.push_back(token);
+        }
+        else
+        {
+            std::cerr << "LINE " << line_no
+                << ": invalid character" << std::endl;
+            return -1;
+        }
     }
     return true; // nothing left
 }
@@ -66,7 +137,23 @@ void display_tokens(std::vector<evl_token> tokens) {
 bool store_tokens_to_file(std::string file_name, std::vector<evl_token> tokens) {
     std::ofstream output_file(file_name);
     //... // verify output_file is ready
+    if (!output_file)
+    {
+        std::cerr << "I can't write " << file_name << ".tokens ." << std::endl;
+        return -1;
+    }
     // almost the same loop as display_tokens
+    for (size_t i = 0; i < tokens.size(); ++i) {
+        if (tokens[i].type == evl_token::SINGLE) {
+            output_file << "SINGLE " << tokens[i].str << std::endl;
+        }
+        else if (tokens[i].type == evl_token::NAME) {
+            output_file << "NAME " << tokens[i].str << std::endl;
+        }
+        else { // must be NUMBER
+            output_file << "NUMBER " << tokens[i].str << std::endl;
+        }
+    }
     return true;
 }
 
@@ -76,6 +163,7 @@ struct evl_statement {
     evl_tokens tokens;
 }; // struct evl_statement
 
+/*
     //... // verify that argv[1] exists
     std::string evl_file = argv[1];
     evl_tokens tokens;
@@ -91,15 +179,9 @@ struct evl_statement {
         return -1;
     }
     display_statements(statements);
+*/
 
-bool group_tokens_into_statements(
-    evl_statements &statements,
-    evl_tokens &tokens) {
-    //...
-}
-
-bool group_tokens_into_statements(
-    evl_statements &statements, evl_tokens &tokens) {
+bool group_tokens_into_statements(evl_statements &statements, evl_tokens &tokens) {
     for (; !tokens.empty();) { // generate one statement per iteration
         evl_token token = tokens.front();
         if (token.type != evl_token::NAME) {

@@ -6,11 +6,23 @@
 #include <assert.h>
 #include <algorithm>
 
-struct evl_token; // struct evl_token
-     
-bool extract_tokens_from_file(std::string file_name, std::vector<evl_token> &tokens); // use reference to modify it
+bool is_character_a_comment(char ch);
+   
+bool is_character_a_space(char ch);
 
-bool extract_tokens_from_line(std::string line, int line_no, std::vector<evl_token> &tokens); // use reference to modify it
+bool is_character_a_single(char ch); 
+
+bool is_character_a_name(char ch);
+
+bool is_character_a_number(char ch);
+
+bool is_character_a_alpha_num_space_dollar(char ch);
+
+struct evl_token;
+     
+bool extract_tokens_from_file(std::string file_name, std::vector<evl_token> &tokens);
+
+bool extract_tokens_from_line(std::string line, int line_no, std::vector<evl_token> &tokens);
 
 void display_tokens(std::vector<evl_token> tokens);
 
