@@ -183,8 +183,8 @@ bool group_tokens_into_statements(evl_statements &statements, evl_tokens &tokens
     for (; !tokens.empty();) { // generate one statement per iteration
         evl_token token = tokens.front();
         if (token.type != evl_token::NAME) {
-            std::cerr << "Need a NAME token but found ’" << token.str
-                << "’ on line " << token.line_no << std::endl;
+            std::cerr << "Need a NAME token but found '" << token.str
+                << "' on line " << token.line_no << std::endl;
             return false;
         }
         if (token.str == "module") { // MODULE statement
@@ -229,7 +229,7 @@ bool move_tokens_to_statement(evl_tokens &statement_tokens, evl_tokens &tokens) 
     assert(statement_tokens.empty());
     // search for ";"
     evl_tokens::iterator next_sc = std::find_if(
-    tokens.begin(), tokens.end(), token_is_semicolon);
+        tokens.begin(), tokens.end(), token_is_semicolon);
     if (next_sc == tokens.end()) {
         std::cerr << "Look for ’;’ but reach the end of file" << std::endl;
         return false;
@@ -237,7 +237,7 @@ bool move_tokens_to_statement(evl_tokens &statement_tokens, evl_tokens &tokens) 
     // move tokens within [tokens.begin(), next_sc] to statement_tokens
     evl_tokens::iterator after_sc = next_sc; ++after_sc;
     statement_tokens.splice(statement_tokens.begin(),
-    tokens, tokens.begin(), after_sc);
+        tokens, tokens.begin(), after_sc);
     return true;
 }
 
@@ -322,7 +322,7 @@ bool process_wire_statement(evl_wires &wires, evl_statement &s) {
 
 */ 
 
-int main(int argc, char *argv[])
+/*int old_main(int argc, char *argv[])
 {
     if (argc < 2)
     {
@@ -425,9 +425,9 @@ int main(int argc, char *argv[])
     }
 
     return 0;
-}
+}*/
 
-int new_main(int argc, char *argv[]) {
+int main(int argc, char *argv[]) {
     if (argc < 2) {
         std::cerr << "You should provide a file name." << std::endl;
         return -1;
@@ -442,5 +442,13 @@ int new_main(int argc, char *argv[]) {
     if (!store_tokens_to_file(evl_file+".tokens", tokens)) {
         return -1;
     }
+    evl_tokens token_list;
+    std::copy(tokens.begin(), tokens.end(), std::back_inserter(token_list));
+    evl_statements statements;
+    if (!group_tokens_into_statements(statements, token_list)) {
+        return -1;
+    }
+    //display_statements(statements);
+
     return 0;
 }
