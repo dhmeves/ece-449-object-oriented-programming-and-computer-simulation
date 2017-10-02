@@ -70,12 +70,12 @@ bool extract_tokens_from_line(std::string line, int line_no, std::vector<evl_tok
             break; // skip the rest of the line by exiting the loop
         }
         // spaces
-        if (is_character_a_space(line[i])) {
+        else if (is_character_a_space(line[i])) {
             ++i; // skip this space character
             continue; // skip the rest of the iteration
         }
         // SINGLE
-        if (is_character_a_single(line[i])) {
+        else if (is_character_a_single(line[i])) {
             evl_token token;
             token.line_no = line_no;
             token.type = evl_token::SINGLE;
@@ -84,7 +84,7 @@ bool extract_tokens_from_line(std::string line, int line_no, std::vector<evl_tok
             ++i;
             continue;
         }
-        if (isalpha(line[i]) || (line[i] == '_')) {
+        else if (isalpha(line[i]) || (line[i] == '_')) {
         //... // a NAME token
             size_t name_begin = i;
             for (++i; i < line.size(); ++i)
@@ -102,7 +102,7 @@ bool extract_tokens_from_line(std::string line, int line_no, std::vector<evl_tok
         }
         //... // NUMBER token and error handling
         // NUMBER
-        if (is_character_a_number(line[i])) {
+        else if (is_character_a_number(line[i])) {
             size_t num = i;
             for (++i; i < line.size(); ++i)
             {
@@ -212,6 +212,7 @@ bool group_tokens_into_statements(evl_statements &statements, evl_tokens &tokens
             }*/
 
             statements.push_back(module);
+            continue;
         }   
         else if (token.str == "endmodule") { // ENDMODULE statement
             //...
@@ -223,9 +224,19 @@ bool group_tokens_into_statements(evl_statements &statements, evl_tokens &tokens
         }
         else if (token.str == "wire") { // WIRE statement
             //...
+            evl_statement wire;
+            wire.type = evl_statement::WIRE;
+            if (!move_tokens_to_statement(wire.tokens, tokens))
+                return false;
+            statements.push_back(wire);
         }
         else { // COMPONENT statement
             //...
+            evl_statement component;
+            component.type = evl_statement::COMPONENT;
+            if (!move_tokens_to_statement(component.tokens, tokens)) 
+                return false;
+            statements.push_back(component);
         }
     }
 }
@@ -451,7 +462,7 @@ int main(int argc, char *argv[]) {
     evl_tokens token_list;
     std::copy(tokens.begin(), tokens.end(), std::back_inserter(token_list));
     for (auto v : token_list)
-        std::cout << v.str << "\n";
+        std::cout << v.type << v.str << v.line_no << "\n";
 
     evl_statements statements;
     if (!group_tokens_into_statements(statements, token_list)) {
