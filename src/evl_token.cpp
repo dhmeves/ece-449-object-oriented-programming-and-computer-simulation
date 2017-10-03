@@ -14,6 +14,39 @@ public:
     
     evl_token();
 
+    bool is_character_a_comment(char ch) {
+        return (ch == '/');
+    }    
+
+    bool is_character_a_space(char ch) {
+        return (ch == ' ') || (ch == '\t')
+            || (ch == '\r') || (ch == '\n');
+    }
+
+    bool is_character_a_single(char ch) {
+        return (ch == '(') || (ch == ')')
+            || (ch == '[') || (ch == ']')
+            || (ch == ':') || (ch == ';')
+            || (ch == ','); 
+    }
+
+    bool is_character_a_name(char ch) {
+        return ((ch >= 'a') && (ch <= 'z'))    // a to z
+            || ((ch >= 'A') && (ch <= 'Z'))    // A to Z
+            || (ch == '_'); 
+    }
+
+    bool is_character_a_number(char ch) {
+        return ((ch >= '0') && (ch <= '9'));
+    }
+
+    bool is_character_a_alpha_num_space_dollar(char ch) {
+        return ((ch >= 'a') && (ch <= 'z'))
+            || ((ch >= 'A') && (ch <= 'Z'))
+            || ((ch >= '0') && (ch <= '9'))
+            || (ch == '_') || (ch == '$');
+    }
+     
     bool extract_tokens_from_file(std::string file_name, std::vector<evl_token> &tokens) { // use reference to modify it
         std::ifstream input_file(file_name);
         if (!input_file) {
@@ -125,6 +158,20 @@ public:
         display_tokens(output_file, tokens);
         return true;
     }
+
+    bool token_is_semicolon(const evl_token &token) {
+        return token.str == ";";
+    }
+
+    bool has_semicolon(const std::vector<evl_token> &tokens) {
+        auto next_sc = std::find_if(tokens.begin(), tokens.end(), 
+            [](const evl_token &token) {
+                return token.str == ";";
+        });
+        
+        return next_sc != tokens.end();
+    }
+
 
 } // class evl_token
 
