@@ -6,6 +6,7 @@
 #include <assert.h>
 #include <algorithm>
 #include <iterator>
+#include <map>
 
 bool is_character_a_comment(char ch);
    
@@ -54,3 +55,7 @@ struct evl_wire;
 typedef std::vector<evl_wire> evl_wires;
 
 bool process_wire_statement(evl_wires &wires, evl_statement &s);
+
+bool make_wires_table(const evl_wires &wires, evl_wires_table &wires_table);
+ 
+void display_wires_table(std::ostream &out, const evl_wires_table &wires_table);  

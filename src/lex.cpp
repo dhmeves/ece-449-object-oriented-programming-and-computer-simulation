@@ -321,6 +321,29 @@ bool process_wire_statement(evl_wires &wires, evl_statement &s) {
     return true;
 }
 
+bool make_wires_table(const evl_wires &wires, evl_wires_table &wires_table) {
+    for (auto &wire: wires) {
+        auto same_name = wires_table.find(wire.name);
+        if (same_name != wires_table.end()) {
+            std:cerr << "Wire '" << wire.name
+                << "'is already defined" << std::end1;
+            return false;
+        }
+        //wires_table[wire.name] = wire.width;
+        wires_table.insert(std::make_pair(wire.name, wire.width));
+    }
+    return true;
+}
+
+void display_wires_table(std::ostream &out, const evl_wires_table &wires_table) {
+    for (evl_wires_table::const_iterator it = wires_table.begin();
+        it != wires_table.end(); ++it) {
+        out << "wire " << it->first
+            << " " << it->second << std::endl;
+    }
+}
+
+
 /* 
     int bus_width = 1;
         //...
