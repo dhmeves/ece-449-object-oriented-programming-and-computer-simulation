@@ -1,11 +1,17 @@
-#include "lex.hpp"
+#include <iostream>
+#include <fstream>
+#include <string>
+#include <vector>
+#include <list>
+#include <assert.h>
+#include <algorithm>
+#include <iterator>
+#include <map>
 
-struct evl_token {
-    enum token_type {NAME, NUMBER, SINGLE};
-    token_type type;
-    std::string str;
-    int line_no;
-}; // struct evl_token
+#include "lex.hpp"
+#include "evl_token.hpp"
+#include "evl_statement.hpp"
+#include "evl_wire.hpp"
 
 bool is_character_a_comment(char ch) {
     return (ch == '/');
@@ -40,124 +46,6 @@ bool is_character_a_alpha_num_space_dollar(char ch) {
         || (ch == '_') || (ch == '$');
 }
  
-bool extract_tokens_from_file(std::string file_name, std::vector<evl_token> &tokens) { // use reference to modify it
-    std::ifstream input_file(file_name);
-    if (!input_file) {
-        std::cerr << "I can’t read " << file_name << "." << std::endl;
-        return false;
-    }
-    tokens.clear(); // be defensive, make it empty
-    std::string line;
-    for (int line_no = 1; std::getline(input_file, line); ++line_no) {
-        if (!extract_tokens_from_line(line, line_no, tokens)) {
-            return false;
-        }
-    }
-    return true;
-}
-
-bool extract_tokens_from_line(std::string line, int line_no, std::vector<evl_token> &tokens) { // use reference to modify it
-    for (size_t i = 0; i < line.size();) {
-        //... // comments and spaces
-        if (is_character_a_comment(line[i])) {
-            ++i;
-            if ((i == line.size()) || (line[i] != '/'))
-            {
-                std::cerr << "LINE " << line_no
-                    << ": a single / is not allowed" << std::endl;
-                return -1;
-            }
-            break; // skip the rest of the line by exiting the loop
-        }
-        // spaces
-        else if (is_character_a_space(line[i])) {
-            ++i; // skip this space character
-            continue; // skip the rest of the iteration
-        }
-        // SINGLE
-        else if (is_character_a_single(line[i])) {
-            evl_token token;
-            token.line_no = line_no;
-            token.type = evl_token::SINGLE;
-            token.str = std::string(1, line[i]);
-            tokens.push_back(token);
-            ++i;
-            continue;
-        }
-        else if (isalpha(line[i]) || (line[i] == '_')) {
-        //... // a NAME token
-            size_t name_begin = i;
-            for (++i; i < line.size(); ++i)
-            {
-                if (!is_character_a_alpha_num_space_dollar(line[i])) {
-                    break; // [name_begin, i) is the range for the token
-                }
-            }
-            evl_token token;
-            token.line_no = line_no;
-            token.type = evl_token::NAME;
-            token.str = line.substr(name_begin, i-name_begin);
-            tokens.push_back(token);
-            continue;
-        }
-        //... // NUMBER token and error handling
-        // NUMBER
-        else if (is_character_a_number(line[i])) {
-            size_t num = i;
-            for (++i; i < line.size(); ++i)
-            {
-               if (!is_character_a_number(line[i]))
-                   break;
-            }
-            evl_token token;
-            token.line_no = line_no;
-            token.type = evl_token::NUMBER;
-            token.str = line.substr(num, i-num);
-            tokens.push_back(token);
-        }
-        else
-        {
-            std::cerr << "LINE " << line_no
-                << ": invalid character" << std::endl;
-            return -1;
-        }
-    }
-    return true; // nothing left
-}
-
-void display_tokens(std::ostream &out, const std::vector<evl_token> &tokens) {
-    for (size_t i = 0; i < tokens.size(); ++i) {
-        if (tokens[i].type == evl_token::SINGLE) {
-            out << "SINGLE " << tokens[i].str << std::endl;
-        }
-        else if (tokens[i].type == evl_token::NAME) {
-            out << "NAME " << tokens[i].str << std::endl;
-        }
-        else { // must be NUMBER
-            out << "NUMBER " << tokens[i].str << std::endl;
-        }
-    }
-}
-
-bool store_tokens_to_file(std::string file_name, const std::vector<evl_token> &tokens) {
-    std::ofstream output_file(file_name.c_str());
-    //... // verify output_file is ready
-    if (!output_file)
-    {
-        std::cerr << "I can't write " << file_name << ".tokens ." << std::endl;
-        return -1;
-    }
-    // almost the same loop as display_tokens
-    display_tokens(output_file, tokens);
-    return true;
-}
-
-struct evl_statement {
-    enum statement_type {MODULE, WIRE, COMPONENT, ENDMODULE};
-    statement_type type;
-    evl_tokens tokens;
-}; // struct evl_statement
-
 bool token_is_semicolon(const evl_token &token) {
     return token.str == ";";
 }
@@ -184,165 +72,6 @@ void show_vector(const std::vector<int> &vec) {
         std::cout << vec[i] << std::endl;
     }
 }
-
-bool group_tokens_into_statements(evl_statements &statements, evl_tokens &tokens) {
-    for (; !tokens.empty();) { // generate one statement per iteration
-        evl_token token = tokens.front();
-        if (token.type != evl_token::NAME) {
-            std::cerr << "Need a NAME token but found '" << token.str
-                << "' on line " << token.line_no << std::endl;
-            return false;
-        }
-        if (token.str == "module") { // MODULE statement
-            //...
-            evl_statement module;
-            module.type = evl_statement::MODULE;
-            // Thinking of a function to replace the loop?
-            if (!move_tokens_to_statement(module.tokens, tokens))
-                return false;
-            /* for (; !tokens.empty();) {
-                module.tokens.push_back(tokens.front());
-                tokens.pop_front(); // consume one token per iteration
-                if (module.tokens.back().str == ";")
-                    break; // exit if the ending ";" is found
-            }
-            if (module.tokens.back().str != ";") {
-                std::cerr << "Look for ’;’ but reach the end of file" << std::endl;
-                return false;
-            }*/
-
-            statements.push_back(module);
-            continue;
-        }   
-        else if (token.str == "endmodule") { // ENDMODULE statement
-            //...
-            evl_statement endmodule;
-            endmodule.type = evl_statement::ENDMODULE;
-            endmodule.tokens.push_back(token);
-            tokens.pop_front();
-            statements.push_back(endmodule);
-        }
-        else if (token.str == "wire") { // WIRE statement
-            //...
-            evl_statement wire;
-            wire.type = evl_statement::WIRE;
-            if (!move_tokens_to_statement(wire.tokens, tokens))
-                return false;
-            statements.push_back(wire);
-        }
-        else { // COMPONENT statement
-            //...
-            evl_statement component;
-            component.type = evl_statement::COMPONENT;
-            if (!move_tokens_to_statement(component.tokens, tokens)) 
-                return false;
-            statements.push_back(component);
-        }
-    }
-}
-
-bool move_tokens_to_statement(evl_tokens &statement_tokens, evl_tokens &tokens) {
-    // What if someone passes the two parameters in the wrong order?
-    assert(statement_tokens.empty());
-    // search for ";"
-    evl_tokens::iterator next_sc = std::find_if(
-        tokens.begin(), tokens.end(), token_is_semicolon);
-    if (next_sc == tokens.end()) {
-        std::cerr << "Look for ’;’ but reach the end of file" << std::endl;
-        return false;
-    }
-    // move tokens within [tokens.begin(), next_sc] to statement_tokens
-    evl_tokens::iterator after_sc = next_sc; ++after_sc;
-    statement_tokens.splice(statement_tokens.begin(),
-        tokens, tokens.begin(), after_sc);
-    return true;
-}
-
-struct evl_wire {
-    std::string name;
-    int width;
-}; // struct evl_wire
-
-bool process_wire_statement(evl_wires &wires, evl_statement &s) {
-    //...
-    enum state_type {INIT, WIRE, DONE, WIRES, WIRE_NAME};
-    state_type state = INIT;
-    for (; !s.tokens.empty() && (state != DONE); s.tokens.pop_front()) {
-        evl_token t = s.tokens.front();
-        //... // use branches here to compute state transitions
-        if (state == INIT) {
-            //...
-            if (t.str == "wire") {
-                state = WIRE;
-            }
-            else {
-                std::cerr << "Need ’wire’ but found ’" << t.str
-                    << "’ on line " << t.line_no << std::endl;
-                return false;
-            }
-        }
-        else if (state == WIRE) {
-            //...
-            if (t.type == evl_token::NAME) {
-                evl_wire wire;
-                wire.name = t.str; wire.width = 1;
-                wires.push_back(wire);
-                state = WIRE_NAME;
-            }
-            else {
-                std::cerr << "Need NAME but found ’" << t.str
-                    << "’ on line " << t.line_no << std::endl;
-                return false;
-            }
-        }
-        else if (state == WIRES) {
-            //...
-            //... // same as the branch for WIRE
-        }
-        else if (state == WIRE_NAME) {
-            //...
-            if (t.str == ",") {
-                state = WIRES;
-            }
-            else if (t.str == ";") {
-                state = DONE;
-            }
-            else {
-                std::cerr << "Need ’,’ or ’;’ but found ’" << t.str
-                    << "’ on line " << t.line_no << std::endl;
-                return false;
-            }
-        }
-    }
-    if (!s.tokens.empty() || (state != DONE)) {
-        std::cerr << "something wrong with the statement" << std::endl;
-        return false;
-    }
-    return true;
-}
-
-bool make_wires_table(const evl_wires &wires, evl_wires_table &wires_table) {
-    for (auto &wire: wires) {
-        auto same_name = wires_table.find(wire.name);
-        if (same_name != wires_table.end()) {
-            std:cerr << "Wire '" << wire.name
-                << "'is already defined" << std::end1;
-            return false;
-        }
-        //wires_table[wire.name] = wire.width;
-        wires_table.insert(std::make_pair(wire.name, wire.width));
-    }
-    return true;
-}
-
-void display_wires_table(std::ostream &out, const evl_wires_table &wires_table) {
-    for (evl_wires_table::const_iterator it = wires_table.begin();
-        it != wires_table.end(); ++it) {
-        out << "wire " << it->first
-            << " " << it->second << std::endl;
-    }
-}
-
 
 /* 
     int bus_width = 1;
