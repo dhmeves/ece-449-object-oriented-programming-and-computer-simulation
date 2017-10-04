@@ -162,7 +162,7 @@ int main(int argc, char *argv[]) {
     if (!token.extract_tokens_from_file(evl_file, tokens)) {
         return -1;
     }
-    display_tokens(std::cout, tokens); // why we need it?
+    token.display_tokens(std::cout, tokens); // why we need it?
     if (!token.store_tokens_to_file(evl_file+".tokens", tokens)) {
         return -1;
     }
