@@ -1,7 +1,29 @@
 // evl_token.cpp
+#include "lex.hpp"
 #include "evl_token.hpp"
 
-evl_token::evl_token();
+evl_token::evl_token(token_type t, std::string s, int l) : type(t), str(s), line_no(l) {    
+}
+
+bool set(token_type t, std::string s, int l) {
+    //...// return false if token is not valid
+    type = t;
+    str = s;
+    line_no = l;
+    return true;
+}
+   
+token_type get_token_type() {
+    return type;
+}
+
+std::string get_string() {
+    return str;
+}
+
+int get_line_no() {
+    return line_no;
+} 
 
 bool evl_token::is_character_a_comment(char ch) {
     return (ch == '/');

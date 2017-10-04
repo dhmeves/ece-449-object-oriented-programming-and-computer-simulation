@@ -12,8 +12,16 @@ class evl_token {
 
 public:
 
-    evl_token();
+    evl_token(token_type t, std::string s, int l);
 
+    bool set(token_type t, std::string s, int l);
+   
+    token_type get_token_type();
+
+    std::string get_string();
+
+    int get_line_no();
+ 
     bool is_character_a_comment(char ch);
        
     bool is_character_a_space(char ch);
@@ -38,4 +46,4 @@ public:
 
     bool has_semicolon(const evl_tokens &tokens);
 
-} // class evl_token
+}; // class evl_token

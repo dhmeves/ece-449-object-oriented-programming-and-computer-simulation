@@ -6,7 +6,13 @@ class evl_wire {
 
 public:
 
-    evl_wire();
+    evl_wire(std::string n, int w);
+
+    bool set(std::string n, int w);
+
+    std::string get_name();
+
+    int get_width();
 
     bool process_wire_statement(evl_wires &wires, evl_statement &s);
 
@@ -14,4 +20,4 @@ public:
  
     void display_wires_table(std::ostream &out, const evl_wires_table &wires_table);  
 
-} // class evl_wire
+}; // class evl_wire

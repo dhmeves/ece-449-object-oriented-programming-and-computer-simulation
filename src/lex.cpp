@@ -9,6 +9,9 @@
 #include <map>
 
 #include "lex.hpp"
+#include "evl_token.hpp"
+#include "evl_statement.hpp"
+#include "evl_wire.hpp"
 
 void remove_all_zeros(std::list<int> &integers) {
     auto to_be_erased = std::remove_if(

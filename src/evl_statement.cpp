@@ -1,7 +1,25 @@
 // evl_statement.cpp
+#include "lex.hpp"
 #include "evl_statement.hpp"
+#include "evl_token.hpp"
 
-evl_statement::evl_statement();
+evl_statement::evl_statement(statement_type t, evl_tokens tok) : type(t), tokens(tok) {
+}
+
+bool set(statement_type t, evl_tokens tok) {
+    //,,,// return false if statement is not valid
+    type = t;
+    tokens = tok;
+    return true;
+}
+
+statement_type get_statement_type() {
+    return type;
+}
+
+evl_tokens get_evl_tokens() {
+    return tokens;
+}
 
 bool evl_statement::group_tokens_into_statements(evl_statements &statements, evl_tokens &tokens) {
     for (; !tokens.empty();) { // generate one statement per iteration

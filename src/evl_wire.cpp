@@ -1,7 +1,24 @@
 // evl_wire.cpp
+#include "lex.hpp"
 #include "evl_wire.hpp"
 
-evl_wire::evl_wire();
+evl_wire::evl_wire(std::string n, int w) : name(n), width(w) {
+}
+
+bool set(std::string n, int w) {
+    //...// return false if wire is invalid
+    name = n;
+    width = w;
+    return true;
+}
+
+std::string get_name() {
+    return name;
+}
+
+int get_width() {
+    return width;
+}
 
 bool evl_wire::process_wire_statement(evl_wires &wires, evl_statement &s) {
     //...
