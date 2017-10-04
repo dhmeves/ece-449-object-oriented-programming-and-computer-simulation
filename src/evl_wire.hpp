@@ -8,9 +8,13 @@ class evl_wire {
 
 public:
 
+// Constructors
+
     evl_wire();
 
     evl_wire(std::string n, int w);
+
+// Setters
 
     bool set(std::string n, int w);
 
@@ -18,14 +22,18 @@ public:
 
     bool set_width(int w);
 
+// Getters
+
     std::string get_name() const;
 
     int get_width() const;
 
-    bool process_wire_statement(evl_wires &wires, evl_statement &s);
+// Other methods
 
-    bool make_wires_table(const evl_wires &wires, evl_wires_table &wires_table);
+    static bool process_wire_statement(evl_wires &wires, evl_statement &s);
+
+    static bool make_wires_table(const evl_wires &wires, evl_wires_table &wires_table);
  
-    void display_wires_table(std::ostream &out, const evl_wires_table &wires_table);  
+    static void display_wires_table(std::ostream &out, const evl_wires_table &wires_table);  
 
 }; // class evl_wire

@@ -13,14 +13,14 @@
 #include "evl_statement.hpp"
 #include "evl_wire.hpp"
 
-void remove_all_zeros(std::list<int> &integers) {
+void lex::remove_all_zeros(std::list<int> &integers) {
     auto to_be_erased = std::remove_if(
         integers.begin(), integers.end(),
         [](int k) {return k == 0;});
     integers.erase(to_be_erased, integers.end());
 }
 
-void show_vector(const std::vector<int> &vec) {
+void lex::show_vector(const std::vector<int> &vec) {
     for (size_t i = 1; i <= vec.size(); ++i) {
         assert(i < vec.size());
         std::cout << vec[i] << std::endl;
@@ -157,13 +157,12 @@ int main(int argc, char *argv[]) {
     }
     //... // verify that argv[1] exists
     std::string evl_file = argv[1];
-    evl_token token;
     std::vector<evl_token> tokens;
-    if (!token.extract_tokens_from_file(evl_file, tokens)) {
+    if (!evl_token::extract_tokens_from_file(evl_file, tokens)) {
         return -1;
     }
-    token.display_tokens(std::cout, tokens); // why we need it?
-    if (!token.store_tokens_to_file(evl_file+".tokens", tokens)) {
+    evl_token::display_tokens(std::cout, tokens); // why we need it?
+    if (!evl_token::store_tokens_to_file(evl_file+".tokens", tokens)) {
         return -1;
     }
     evl_tokens token_list;
@@ -171,9 +170,8 @@ int main(int argc, char *argv[]) {
     for (auto v : token_list)
         std::cout << v.get_token_type() << v.get_string() << v.get_line_no() << "\n";
    
-    evl_statement statement;
     evl_statements statements;
-    if (!statement.group_tokens_into_statements(statements, token_list)) {
+    if (!evl_statement::group_tokens_into_statements(statements, token_list)) {
         return -1;
     }
     //display_statements(statements);

@@ -99,6 +99,7 @@ bool evl_statement::group_tokens_into_statements(evl_statements &statements, evl
             statements.push_back(component);
         }
     }
+    return true;
 }
 
 bool evl_statement::move_tokens_to_statement(evl_tokens &statement_tokens, evl_tokens &tokens) {
@@ -106,7 +107,7 @@ bool evl_statement::move_tokens_to_statement(evl_tokens &statement_tokens, evl_t
     assert(statement_tokens.empty());
     // search for ";"
     evl_tokens::iterator next_sc = std::find_if(
-        tokens.begin(), tokens.end(), token_is_semicolon);
+        tokens.begin(), tokens.end(), evl_token::token_is_semicolon);
     if (next_sc == tokens.end()) {
         std::cerr << "Look for ’;’ but reach the end of file" << std::endl;
         return false;
