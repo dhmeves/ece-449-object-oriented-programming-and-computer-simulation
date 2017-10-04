@@ -1,3 +1,5 @@
+// evl_token.hpp
+
 #include <string>
 
 class evl_token {
@@ -17,12 +19,18 @@ public:
     evl_token(token_type t, std::string s, int l);
 
     bool set(token_type t, std::string s, int l);
+
+    bool set_token_type(token_type t);
+
+    bool set_string(std::string s);
+
+    bool set_line_no(int l);
    
-    token_type get_token_type();
+    token_type get_token_type() const;
 
-    std::string get_string();
+    std::string get_string() const;
 
-    int get_line_no();
+    int get_line_no() const;
  
     bool is_character_a_comment(char ch);
        

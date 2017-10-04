@@ -1,3 +1,5 @@
+// evl_wire.hpp
+
 class evl_wire {
 
     std::string name;
@@ -12,9 +14,13 @@ public:
 
     bool set(std::string n, int w);
 
-    std::string get_name();
+    bool set_name(std::string n);
 
-    int get_width();
+    bool set_width(int w);
+
+    std::string get_name() const;
+
+    int get_width() const;
 
     bool process_wire_statement(evl_wires &wires, evl_statement &s);
 

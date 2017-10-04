@@ -3,13 +3,9 @@
 #include "evl_statement.hpp"
 #include "evl_token.hpp"
 
-evl_statement::evl_statement() {
-    t = evl_statement::MODULE;
-    tokens = NULL;
-}
+evl_statement::evl_statement() {}
 
-evl_statement::evl_statement(statement_type t, evl_tokens tok) : type(t), tokens(tok) {
-}
+evl_statement::evl_statement(statement_type t, evl_tokens tok) : type(t), tokens(tok) {}
 
 bool set(statement_type t, evl_tokens tok) {
     //,,,// return false if statement is not valid
@@ -18,11 +14,23 @@ bool set(statement_type t, evl_tokens tok) {
     return true;
 }
 
-statement_type get_statement_type() {
+bool set_statement_type(statement_type t) {
+    //...// return false if statment type is invalid
+    type = t;
+    return true;
+}
+
+bool set_evl_tokens(evl_tokens tok) {
+    //...// return false if tokens are invalid
+    tokens = tok;
+    return true;
+}
+
+statement_type get_statement_type() const{
     return type;
 }
 
-evl_tokens get_evl_tokens() {
+evl_tokens & get_evl_tokens() const{
     return tokens;
 }
 
@@ -37,7 +45,7 @@ bool evl_statement::group_tokens_into_statements(evl_statements &statements, evl
         if (token.get_string() == "module") { // MODULE statement
             //...
             evl_statement module;
-            module.set(evl_statement::MODULE, NULL);
+            module.set_statement_type(evl_statement::MODULE);
             // Thinking of a function to replace the loop?
             if (!move_tokens_to_statement(module.get_evl_tokens(), tokens))
                 return false;
@@ -58,7 +66,7 @@ bool evl_statement::group_tokens_into_statements(evl_statements &statements, evl
         else if (token.get_string() == "endmodule") { // ENDMODULE statement
             //...
             evl_statement endmodule;
-            endmodule.set(evl_statement::ENDMODULE, NULL);
+            endmodule.set_statement_type(evl_statement::ENDMODULE);
             endmodule.get_statement_type() = evl_statement::ENDMODULE;
             endmodule.get_evl_tokens().push_back(token);
             tokens.pop_front();
@@ -67,7 +75,7 @@ bool evl_statement::group_tokens_into_statements(evl_statements &statements, evl
         else if (token.get_string() == "wire") { // WIRE statement
             //...
             evl_statement wire;
-            wire.set(evl_statement::WIRE, NULL);
+            wire.set_statement_type(evl_statement::WIRE);
             if (!move_tokens_to_statement(wire.get_evl_tokens(), tokens))
                 return false;
             statements.push_back(wire);
@@ -75,7 +83,7 @@ bool evl_statement::group_tokens_into_statements(evl_statements &statements, evl
         else { // COMPONENT statement
             //...
             evl_statement component;
-            component.set(evl_statement::COMPONENT, NULL);
+            component.set_statement_type(evl_statement::COMPONENT);
             if (!move_tokens_to_statement(component.get_evl_tokens(), tokens)) 
                 return false;
             statements.push_back(component);

@@ -2,11 +2,7 @@
 #include "lex.hpp"
 #include "evl_token.hpp"
 
-evl_token::evl_token() {
-    type = token_type::NAME;
-    str = NULL;
-    line_no = 0;
-}
+evl_token::evl_token() {}
 
 evl_token::evl_token(token_type t, std::string s, int l) : type(t), str(s), line_no(l) {    
 }
@@ -18,16 +14,34 @@ bool set(token_type t, std::string s, int l) {
     line_no = l;
     return true;
 }
-   
-token_type get_token_type() {
-    return type;
+
+bool set_token_type(token_type t) {
+    //...// return false if type is invalid
+    type = t;
+    return true;
 }
 
-std::string get_string() {
+bool set_string(std::string s) {
+    //...// return false if string is invalid
+    str = s;
+    return true;
+}
+
+bool set_line_no(int l) {
+    //...// return false if line number is invalid
+    line_no = l;
+    return true;
+}  
+
+token_type get_token_type() const {
+    return type;
+} 
+
+std::string get_string() const {
     return str;
 }
 
-int get_line_no() {
+int get_line_no() const {
     return line_no;
 } 
 

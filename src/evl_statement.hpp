@@ -16,9 +16,13 @@ public:
 
     bool set(statement_type t, evl_tokens tok);
 
-    statement_type get_statement_type();
+    bool set_statement_type(statement_type t);
 
-    evl_tokens get_evl_tokens();
+    bool set_evl_tokens(evl_tokens tok);
+
+    statement_type get_statement_type() const;
+
+    evl_tokens get_evl_tokens() const;
 
     bool group_tokens_into_statements(evl_statements &statements, evl_tokens &tokens);
 

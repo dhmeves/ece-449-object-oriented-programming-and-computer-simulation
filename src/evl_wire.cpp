@@ -1,11 +1,10 @@
 // evl_wire.cpp
 #include "lex.hpp"
 #include "evl_wire.hpp"
+#include "evl_statement.hpp"
+#include <iostream>
 
-evl_wire::evl_wire () {
-    name = NULL;
-    width= 0;
-}
+evl_wire::evl_wire () {}
 
 evl_wire::evl_wire(std::string n, int w) : name(n), width(w) {
 }
@@ -17,11 +16,23 @@ bool set(std::string n, int w) {
     return true;
 }
 
-std::string get_name() {
+bool set_name(std::string n) {
+    //...// return false if name is invalid
+    name = n;
+    return true;
+}
+
+bool set_width(int w) {
+    //...// return false if width is invalid
+    width = w;
+    return true;
+}
+
+std::string get_name() const{
     return name;
 }
 
-int get_width() {
+int get_width() const{
     return width;
 }
 
@@ -87,8 +98,8 @@ bool evl_wire::make_wires_table(const evl_wires &wires, evl_wires_table &wires_t
     for (auto &wire: wires) {
         auto same_name = wires_table.find(wire.get_name());
         if (same_name != wires_table.end()) {
-            std:cerr << "Wire '" << wire.get_name()
-                << "'is already defined" << std::end1;
+            std::cerr << "Wire '" << wire.get_name()
+                << "'is already defined" << std::endl;
             return false;
         }
         //wires_table[wire.name] = wire.width;
