@@ -5,12 +5,12 @@ typedef std::list<evl_token> evl_tokens;
 
 typedef std::list<evl_statement> evl_statements;
 
-bool token_is_semicolon(const evl_token &token);
+typedef std::vector<evl_wire> evl_wires;
 
-bool has_semicolon(const evl_tokens &tokens);
+#include "evl_token.hpp"
+#include "evl_statement.hpp"
+#include "evl_wire.hpp"
 
 void remove_all_zeros(std::list<int> &integers);
 
 void show_vector(const std::vector<int> &vec);
-
-typedef std::vector<evl_wire> evl_wires;
