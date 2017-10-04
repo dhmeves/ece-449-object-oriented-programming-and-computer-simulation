@@ -24,25 +24,25 @@ evl_tokens get_evl_tokens() {
 bool evl_statement::group_tokens_into_statements(evl_statements &statements, evl_tokens &tokens) {
     for (; !tokens.empty();) { // generate one statement per iteration
         evl_token token = tokens.front();
-        if (token.type != evl_token::NAME) {
-            std::cerr << "Need a NAME token but found '" << token.str
-                << "' on line " << token.line_no << std::endl;
+        if (token.get_token_type() != evl_token::NAME) {
+            std::cerr << "Need a NAME token but found '" << token.get_str()
+                << "' on line " << token.get_line_no() << std::endl;
             return false;
         }
-        if (token.str == "module") { // MODULE statement
+        if (token.get_string() == "module") { // MODULE statement
             //...
             evl_statement module;
-            module.type = evl_statement::MODULE;
+            module.set(evl_statement::MODULE, NULL);
             // Thinking of a function to replace the loop?
-            if (!move_tokens_to_statement(module.tokens, tokens))
+            if (!move_tokens_to_statement(module.get_evl_tokens(), tokens))
                 return false;
             /* for (; !tokens.empty();) {
-                module.tokens.push_back(tokens.front());
+                module.get_evl_tokens().push_back(tokens.front());
                 tokens.pop_front(); // consume one token per iteration
-                if (module.tokens.back().str == ";")
+                if (module.get_evl_tokens().back().get_string() == ";")
                     break; // exit if the ending ";" is found
             }
-            if (module.tokens.back().str != ";") {
+            if (module.get_evl_tokens().back().get_string() != ";") {
                 std::cerr << "Look for ’;’ but reach the end of file" << std::endl;
                 return false;
             }*/
@@ -50,27 +50,28 @@ bool evl_statement::group_tokens_into_statements(evl_statements &statements, evl
             statements.push_back(module);
             continue;
         }   
-        else if (token.str == "endmodule") { // ENDMODULE statement
+        else if (token.get_string() == "endmodule") { // ENDMODULE statement
             //...
             evl_statement endmodule;
-            endmodule.type = evl_statement::ENDMODULE;
-            endmodule.tokens.push_back(token);
+            endmodule.set(evl_statement::ENDMODULE, NULL);
+            endmodule.get_statement_type() = evl_statement::ENDMODULE;
+            endmodule.get_evl_tokens().push_back(token);
             tokens.pop_front();
             statements.push_back(endmodule);
         }
-        else if (token.str == "wire") { // WIRE statement
+        else if (token.get_string() == "wire") { // WIRE statement
             //...
             evl_statement wire;
-            wire.type = evl_statement::WIRE;
-            if (!move_tokens_to_statement(wire.tokens, tokens))
+            wire.set(evl_statement::WIRE, NULL);
+            if (!move_tokens_to_statement(wire.get_evl_tokens(), tokens))
                 return false;
             statements.push_back(wire);
         }
         else { // COMPONENT statement
             //...
             evl_statement component;
-            component.type = evl_statement::COMPONENT;
-            if (!move_tokens_to_statement(component.tokens, tokens)) 
+            component.set(evl_statement::COMPONENT, NULL);
+            if (!move_tokens_to_statement(component.get_evl_tokens(), tokens)) 
                 return false;
             statements.push_back(component);
         }

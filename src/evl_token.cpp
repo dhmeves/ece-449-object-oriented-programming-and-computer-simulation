@@ -95,9 +95,7 @@ bool evl_token::extract_tokens_from_line(std::string line, int line_no, std::vec
         // SINGLE
         else if (is_character_a_single(line[i])) {
             evl_token token;
-            token.line_no = line_no;
-            token.type = evl_token::SINGLE;
-            token.str = std::string(1, line[i]);
+            token.set(evl_token::SINGLE, std::string(1, line[i]), line_no);
             tokens.push_back(token);
             ++i;
             continue;
@@ -112,9 +110,7 @@ bool evl_token::extract_tokens_from_line(std::string line, int line_no, std::vec
                 }
             }
             evl_token token;
-            token.line_no = line_no;
-            token.type = evl_token::NAME;
-            token.str = line.substr(name_begin, i-name_begin);
+            token.set(evl_token::NAME, line.substr(name_begin, i-name_begin), line_no);
             tokens.push_back(token);
             continue;
         }
@@ -128,9 +124,7 @@ bool evl_token::extract_tokens_from_line(std::string line, int line_no, std::vec
                 break;
             }   
             evl_token token;
-            token.line_no = line_no;
-            token.type = evl_token::NUMBER;
-            token.str = line.substr(num, i-num);
+            token.set(evl_token::NUMBER, line.substr(num, i-num), line_no);
             tokens.push_back(token);
         }
         else
@@ -145,14 +139,14 @@ bool evl_token::extract_tokens_from_line(std::string line, int line_no, std::vec
 
 void evl_token::display_tokens(std::ostream &out, const std::vector<evl_token> &tokens) {
     for (size_t i = 0; i < tokens.size(); ++i) {
-        if (tokens[i].type == evl_token::SINGLE) {
-            out << "SINGLE " << tokens[i].str << std::endl;
+        if (tokens[i].get_token_type() == evl_token::SINGLE) {
+            out << "SINGLE " << tokens[i].get_string() << std::endl;
         }
-        else if (tokens[i].type == evl_token::NAME) {
-            out << "NAME " << tokens[i].str << std::endl;
+        else if (tokens[i].get_token_type() == evl_token::NAME) {
+            out << "NAME " << tokens[i].get_string() << std::endl;
         }
         else { // must be NUMBER
-            out << "NUMBER " << tokens[i].str << std::endl;
+            out << "NUMBER " << tokens[i].get_string() << std::endl;
         }
     }
 }   
@@ -171,13 +165,13 @@ bool evl_token::store_tokens_to_file(std::string file_name, const std::vector<ev
 }
 
 bool evl_token::token_is_semicolon(const evl_token &token) {
-    return token.str == ";";
+    return token.get_string() == ";";
 }
 
 bool evl_token::has_semicolon(const std::vector<evl_token> &tokens) {
     auto next_sc = std::find_if(tokens.begin(), tokens.end(), 
         [](const evl_token &token) {
-            return token.str == ";";
+            return token.get_string() == ";";
     });
     
     return next_sc != tokens.end();

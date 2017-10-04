@@ -1,5 +1,6 @@
 #include <list>
 #include <vector>
+#include <map>
 
 class evl_token;
 
@@ -12,6 +13,8 @@ typedef std::list<evl_token> evl_tokens;
 typedef std::list<evl_statement> evl_statements;
 
 typedef std::vector<evl_wire> evl_wires;
+
+typedef std::map<std::string, int> evl_wires_table;
 
 void remove_all_zeros(std::list<int> &integers);
 
