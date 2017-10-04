@@ -1,44 +1,55 @@
 // evl_statement.cpp
+#include <iostream>
+#include <fstream>
+#include <string>
+#include <vector>
+#include <list>
+#include <assert.h>
+#include <algorithm>
+#include <iterator>
+#include <map>
+
 #include "lex.hpp"
-#include "evl_statement.hpp"
 #include "evl_token.hpp"
+#include "evl_statement.hpp"
+#include "evl_wire.hpp"
 
 evl_statement::evl_statement() {}
 
 evl_statement::evl_statement(statement_type t, evl_tokens tok) : type(t), tokens(tok) {}
 
-bool set(statement_type t, evl_tokens tok) {
+bool evl_statement::set(statement_type t, evl_tokens tok) {
     //,,,// return false if statement is not valid
     type = t;
     tokens = tok;
     return true;
 }
 
-bool set_statement_type(statement_type t) {
+bool evl_statement::set_statement_type(statement_type t) {
     //...// return false if statment type is invalid
     type = t;
     return true;
 }
 
-bool set_evl_tokens(evl_tokens tok) {
+bool evl_statement::set_evl_tokens(evl_tokens tok) {
     //...// return false if tokens are invalid
     tokens = tok;
     return true;
 }
 
-statement_type get_statement_type() const{
+evl_statement::statement_type evl_statement::get_statement_type() const{
     return type;
 }
 
-evl_tokens & get_evl_tokens() const{
-    return tokens;
+evl_tokens & evl_statement::get_evl_tokens() const{
+    return &tokens;
 }
 
 bool evl_statement::group_tokens_into_statements(evl_statements &statements, evl_tokens &tokens) {
     for (; !tokens.empty();) { // generate one statement per iteration
         evl_token token = tokens.front();
         if (token.get_token_type() != evl_token::NAME) {
-            std::cerr << "Need a NAME token but found '" << token.get_str()
+            std::cerr << "Need a NAME token but found '" << token.get_string()
                 << "' on line " << token.get_line_no() << std::endl;
             return false;
         }
@@ -67,7 +78,6 @@ bool evl_statement::group_tokens_into_statements(evl_statements &statements, evl
             //...
             evl_statement endmodule;
             endmodule.set_statement_type(evl_statement::ENDMODULE);
-            endmodule.get_statement_type() = evl_statement::ENDMODULE;
             endmodule.get_evl_tokens().push_back(token);
             tokens.pop_front();
             statements.push_back(endmodule);

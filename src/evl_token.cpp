@@ -1,13 +1,25 @@
 // evl_token.cpp
+#include <iostream>
+#include <fstream>
+#include <string>
+#include <vector>
+#include <list>
+#include <assert.h>
+#include <algorithm>
+#include <iterator>
+#include <map>
+
 #include "lex.hpp"
 #include "evl_token.hpp"
+#include "evl_statement.hpp"
+#include "evl_wire.hpp"
 
 evl_token::evl_token() {}
 
 evl_token::evl_token(token_type t, std::string s, int l) : type(t), str(s), line_no(l) {    
 }
 
-bool set(token_type t, std::string s, int l) {
+bool evl_token::set(token_type t, std::string s, int l) {
     //...// return false if token is not valid
     type = t;
     str = s;
@@ -15,33 +27,33 @@ bool set(token_type t, std::string s, int l) {
     return true;
 }
 
-bool set_token_type(token_type t) {
+bool evl_token::set_token_type(token_type t) {
     //...// return false if type is invalid
     type = t;
     return true;
 }
 
-bool set_string(std::string s) {
+bool evl_token::set_string(std::string s) {
     //...// return false if string is invalid
     str = s;
     return true;
 }
 
-bool set_line_no(int l) {
+bool evl_token::set_line_no(int l) {
     //...// return false if line number is invalid
     line_no = l;
     return true;
 }  
 
-token_type get_token_type() const {
+evl_token::token_type evl_token::get_token_type() const {
     return type;
 } 
 
-std::string get_string() const {
+std::string evl_token::get_string() const {
     return str;
 }
 
-int get_line_no() const {
+int evl_token::get_line_no() const {
     return line_no;
 } 
 

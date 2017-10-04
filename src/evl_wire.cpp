@@ -1,38 +1,48 @@
 // evl_wire.cpp
-#include "lex.hpp"
-#include "evl_wire.hpp"
-#include "evl_statement.hpp"
 #include <iostream>
+#include <fstream>
+#include <string>
+#include <vector>
+#include <list>
+#include <assert.h>
+#include <algorithm>
+#include <iterator>
+#include <map>
+
+#include "lex.hpp"
+#include "evl_token.hpp"
+#include "evl_statement.hpp"
+#include "evl_wire.hpp"
 
 evl_wire::evl_wire () {}
 
 evl_wire::evl_wire(std::string n, int w) : name(n), width(w) {
 }
 
-bool set(std::string n, int w) {
+bool evl_wire::set(std::string n, int w) {
     //...// return false if wire is invalid
     name = n;
     width = w;
     return true;
 }
 
-bool set_name(std::string n) {
+bool evl_wire::set_name(std::string n) {
     //...// return false if name is invalid
     name = n;
     return true;
 }
 
-bool set_width(int w) {
+bool evl_wire::set_width(int w) {
     //...// return false if width is invalid
     width = w;
     return true;
 }
 
-std::string get_name() const{
+std::string evl_wire::get_name() const{
     return name;
 }
 
-int get_width() const{
+int evl_wire::get_width() const{
     return width;
 }
 

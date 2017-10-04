@@ -4,8 +4,12 @@
 
 class evl_token {
 
+public:    
+
     enum token_type {NAME, NUMBER, SINGLE};
     
+private:
+
     token_type type;
     
     std::string str;
@@ -13,7 +17,7 @@ class evl_token {
     int line_no;
 
 public:
-
+    
     evl_token();
 
     evl_token(token_type t, std::string s, int l);
@@ -54,6 +58,6 @@ public:
 
     bool token_is_semicolon(const evl_token &token);
 
-    bool has_semicolon(const evl_tokens &tokens);
+    bool has_semicolon(const std::vector<evl_token> &tokens);
 
 }; // class evl_token
