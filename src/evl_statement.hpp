@@ -1,3 +1,5 @@
+// evl_statement.hpp
+
 class evl_statement {
    
     enum statement_type {MODULE, WIRE, COMPONENT, ENDMODULE};
@@ -7,6 +9,8 @@ class evl_statement {
     evl_tokens tokens;
 
 public:
+    
+    evl_statement();
 
     evl_statement(statement_type t, evl_tokens tok);
 

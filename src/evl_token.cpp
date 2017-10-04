@@ -2,6 +2,12 @@
 #include "lex.hpp"
 #include "evl_token.hpp"
 
+evl_token::evl_token() {
+    type = token_type::NAME;
+    str = NULL;
+    line_no = 0;
+}
+
 evl_token::evl_token(token_type t, std::string s, int l) : type(t), str(s), line_no(l) {    
 }
 

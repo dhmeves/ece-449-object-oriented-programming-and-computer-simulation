@@ -2,6 +2,11 @@
 #include "lex.hpp"
 #include "evl_wire.hpp"
 
+evl_wire::evl_wire () {
+    name = NULL;
+    width= 0;
+}
+
 evl_wire::evl_wire(std::string n, int w) : name(n), width(w) {
 }
 

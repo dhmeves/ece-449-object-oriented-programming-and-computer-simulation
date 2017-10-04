@@ -157,21 +157,23 @@ int main(int argc, char *argv[]) {
     }
     //... // verify that argv[1] exists
     std::string evl_file = argv[1];
+    evl_token token;
     std::vector<evl_token> tokens;
-    if (!extract_tokens_from_file(evl_file, tokens)) {
+    if (!token.extract_tokens_from_file(evl_file, tokens)) {
         return -1;
     }
     display_tokens(std::cout, tokens); // why we need it?
-    if (!store_tokens_to_file(evl_file+".tokens", tokens)) {
+    if (!token.store_tokens_to_file(evl_file+".tokens", tokens)) {
         return -1;
     }
     evl_tokens token_list;
     std::copy(tokens.begin(), tokens.end(), std::back_inserter(token_list));
     for (auto v : token_list)
-        std::cout << v.type << v.str << v.line_no << "\n";
-
+        std::cout << v.get_token_type() << v.get_string() << v.get_line_no() << "\n";
+   
+    evl_statement statement;
     evl_statements statements;
-    if (!group_tokens_into_statements(statements, token_list)) {
+    if (!statement.group_tokens_into_statements(statements, token_list)) {
         return -1;
     }
     //display_statements(statements);

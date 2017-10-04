@@ -12,6 +12,8 @@ class evl_token {
 
 public:
 
+    evl_token();
+
     evl_token(token_type t, std::string s, int l);
 
     bool set(token_type t, std::string s, int l);

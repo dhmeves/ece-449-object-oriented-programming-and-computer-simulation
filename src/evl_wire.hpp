@@ -6,6 +6,8 @@ class evl_wire {
 
 public:
 
+    evl_wire();
+
     evl_wire(std::string n, int w);
 
     bool set(std::string n, int w);

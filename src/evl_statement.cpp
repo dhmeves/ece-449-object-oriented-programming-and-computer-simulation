@@ -3,6 +3,11 @@
 #include "evl_statement.hpp"
 #include "evl_token.hpp"
 
+evl_statement::evl_statement() {
+    t = evl_statement::MODULE;
+    tokens = NULL;
+}
+
 evl_statement::evl_statement(statement_type t, evl_tokens tok) : type(t), tokens(tok) {
 }
 
