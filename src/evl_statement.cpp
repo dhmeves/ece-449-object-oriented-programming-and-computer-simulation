@@ -16,9 +16,9 @@
 
 evl_statement::evl_statement() {}
 
-evl_statement::evl_statement(statement_type t, evl_tokens tok) : type(t), tokens(tok) {}
+evl_statement::evl_statement(statement_type t, evl_tokens * const tok) : type(t), tokens(tok) {}
 
-bool evl_statement::set(statement_type t, evl_tokens tok) {
+bool evl_statement::set(statement_type t, evl_tokens * const tok) {
     //,,,// return false if statement is not valid
     type = t;
     tokens = tok;
@@ -31,7 +31,7 @@ bool evl_statement::set_statement_type(statement_type t) {
     return true;
 }
 
-bool evl_statement::set_evl_tokens(evl_tokens tok) {
+bool evl_statement::set_evl_tokens(evl_tokens * const tok) {
     //...// return false if tokens are invalid
     tokens = tok;
     return true;
@@ -41,8 +41,8 @@ evl_statement::statement_type evl_statement::get_statement_type() const{
     return type;
 }
 
-evl_tokens & evl_statement::get_evl_tokens() const{
-    return &tokens;
+evl_tokens * evl_statement::get_evl_tokens() const{
+    return tokens;
 }
 
 bool evl_statement::group_tokens_into_statements(evl_statements &statements, evl_tokens &tokens) {
@@ -58,7 +58,7 @@ bool evl_statement::group_tokens_into_statements(evl_statements &statements, evl
             evl_statement module;
             module.set_statement_type(evl_statement::MODULE);
             // Thinking of a function to replace the loop?
-            if (!move_tokens_to_statement(module.get_evl_tokens(), tokens))
+            if (!move_tokens_to_statement(*module.get_evl_tokens(), tokens))
                 return false;
             /* for (; !tokens.empty();) {
                 module.get_evl_tokens().push_back(tokens.front());
@@ -78,7 +78,7 @@ bool evl_statement::group_tokens_into_statements(evl_statements &statements, evl
             //...
             evl_statement endmodule;
             endmodule.set_statement_type(evl_statement::ENDMODULE);
-            endmodule.get_evl_tokens().push_back(token);
+            endmodule.get_evl_tokens()->push_back(token);
             tokens.pop_front();
             statements.push_back(endmodule);
         }
@@ -86,7 +86,7 @@ bool evl_statement::group_tokens_into_statements(evl_statements &statements, evl
             //...
             evl_statement wire;
             wire.set_statement_type(evl_statement::WIRE);
-            if (!move_tokens_to_statement(wire.get_evl_tokens(), tokens))
+            if (!move_tokens_to_statement(*wire.get_evl_tokens(), tokens))
                 return false;
             statements.push_back(wire);
         }
@@ -94,7 +94,7 @@ bool evl_statement::group_tokens_into_statements(evl_statements &statements, evl
             //...
             evl_statement component;
             component.set_statement_type(evl_statement::COMPONENT);
-            if (!move_tokens_to_statement(component.get_evl_tokens(), tokens)) 
+            if (!move_tokens_to_statement(*component.get_evl_tokens(), tokens)) 
                 return false;
             statements.push_back(component);
         }
