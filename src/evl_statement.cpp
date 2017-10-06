@@ -142,7 +142,7 @@ bool evl_statement::store_statements_to_file(std::string file_name, const std::v
     //... // verify output_file is ready
     if (!output_file)
     {
-        std::cerr << "I can't write " << file_name << ".tokens ." << std::endl;
+        std::cerr << "I can't write " << file_name << ".syntax ." << std::endl;
         return -1;
     }
     // almost the same loop as display_tokens
