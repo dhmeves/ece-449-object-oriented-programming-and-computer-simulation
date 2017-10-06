@@ -56,7 +56,8 @@ bool evl_statement::group_tokens_into_statements(evl_statements &statements, evl
         if (token.get_string() == "module") { // MODULE statement
             //...
             evl_statement module;
-            module.set_statement_type(evl_statement::MODULE);
+            evl_tokens token_list;
+            module.set(evl_statement::MODULE, &token_list);
             // Thinking of a function to replace the loop?
             if (!move_tokens_to_statement(*module.get_evl_tokens(), tokens))
                 return false;
@@ -77,7 +78,8 @@ bool evl_statement::group_tokens_into_statements(evl_statements &statements, evl
         else if (token.get_string() == "endmodule") { // ENDMODULE statement
             //...
             evl_statement endmodule;
-            endmodule.set_statement_type(evl_statement::ENDMODULE);
+            evl_tokens token_list;
+            endmodule.set(evl_statement::ENDMODULE, &token_list);
             endmodule.get_evl_tokens()->push_back(token);
             tokens.pop_front();
             statements.push_back(endmodule);
@@ -85,7 +87,8 @@ bool evl_statement::group_tokens_into_statements(evl_statements &statements, evl
         else if (token.get_string() == "wire") { // WIRE statement
             //...
             evl_statement wire;
-            wire.set_statement_type(evl_statement::WIRE);
+            evl_tokens token_list;
+            wire.set(evl_statement::WIRE, &token_list);
             if (!move_tokens_to_statement(*wire.get_evl_tokens(), tokens))
                 return false;
             statements.push_back(wire);
@@ -93,7 +96,8 @@ bool evl_statement::group_tokens_into_statements(evl_statements &statements, evl
         else { // COMPONENT statement
             //...
             evl_statement component;
-            component.set_statement_type(evl_statement::COMPONENT);
+            evl_tokens token_list;
+            component.set(evl_statement::COMPONENT, &token_list);
             if (!move_tokens_to_statement(*component.get_evl_tokens(), tokens)) 
                 return false;
             statements.push_back(component);
@@ -116,5 +120,32 @@ bool evl_statement::move_tokens_to_statement(evl_tokens &statement_tokens, evl_t
     evl_tokens::iterator after_sc = next_sc; ++after_sc;
     statement_tokens.splice(statement_tokens.begin(),
         tokens, tokens.begin(), after_sc);
+    return true;
+}
+
+void evl_statement::display_statements(std::ostream &out, const std::vector<evl_statement> &statements) {
+    for (size_t i = 0; i < statements.size(); ++i) {
+        if (statements[i].get_statement_type() == evl_statement::MODULE) {
+            out << "module " << statements[i].get_evl_tokens() << std::endl;
+        }
+        else if (statements[i].get_statement_type() == evl_statement::WIRE) {
+            out << "wire " << statements[i].get_evl_tokens() << std::endl;
+        }
+        else if (statements[i].get_statement_type() == evl_statement::COMPONENT) {
+            out << "component " << statements[i].get_evl_tokens() << std::endl;
+        }
+    }
+}   
+
+bool evl_statement::store_statements_to_file(std::string file_name, const std::vector<evl_statement> &statements) {
+    std::ofstream output_file(file_name.c_str());
+    //... // verify output_file is ready
+    if (!output_file)
+    {
+        std::cerr << "I can't write " << file_name << ".tokens ." << std::endl;
+        return -1;
+    }
+    // almost the same loop as display_tokens
+    display_statements(output_file, statements);
     return true;
 }

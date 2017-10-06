@@ -40,4 +40,8 @@ public:
 
     static bool move_tokens_to_statement(evl_tokens &statement_tokens, evl_tokens &tokens);
 
+    static void display_statements(std::ostream &out, const std::vector<evl_statement> &statements); 
+
+    static bool store_statements_to_file(std::string file_name, const std::vector<evl_statement> &statements); 
+
 }; // class evl_statement
