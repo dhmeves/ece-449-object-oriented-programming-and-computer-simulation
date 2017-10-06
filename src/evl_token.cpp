@@ -16,8 +16,7 @@
 
 evl_token::evl_token() {}
 
-evl_token::evl_token(token_type t, std::string s, int l) : type(t), str(s), line_no(l) {    
-}
+evl_token::evl_token(token_type t, std::string s, int l) : type(t), str(s), line_no(l) {}
 
 bool evl_token::set(token_type t, std::string s, int l) {
     //...// return false if token is not valid

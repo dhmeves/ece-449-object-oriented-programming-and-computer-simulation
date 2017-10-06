@@ -165,6 +165,7 @@ int main(int argc, char *argv[]) {
     if (!evl_token::store_tokens_to_file(evl_file+".tokens", tokens)) {
         return -1;
     }
+    // Print out tokens in token list
     evl_tokens token_list;
     std::copy(tokens.begin(), tokens.end(), std::back_inserter(token_list));
     for (auto v : token_list)

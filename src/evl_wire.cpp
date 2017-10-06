@@ -124,4 +124,8 @@ void evl_wire::display_wires_table(std::ostream &out, const evl_wires_table &wir
         out << "wire " << it->first
             << " " << it->second << std::endl;
     }
+    for (auto &kv: wires_table) {
+        out << "wire " << kv.first
+            << " " << kv.second << std::endl;
+    }
 }
