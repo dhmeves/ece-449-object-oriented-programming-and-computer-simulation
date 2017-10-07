@@ -50,8 +50,8 @@ bool evl_wire::process_wire_statement(evl_wires &wires, evl_statement &s) {
     //...
     enum state_type {INIT, WIRE, DONE, WIRES, WIRE_NAME};
     state_type state = INIT;
-    for (; !s.get_evl_tokens()->empty() && (state != DONE); s.get_evl_tokens()->pop_front()) {
-        evl_token t = s.get_evl_tokens()->front();
+    for (; !s.get_evl_tokens().empty() && (state != DONE); s.get_evl_tokens().pop_front()) {
+        evl_token t = s.get_evl_tokens().front();
         //... // use branches here to compute state transitions
         if (state == INIT) {
             //...
@@ -97,7 +97,7 @@ bool evl_wire::process_wire_statement(evl_wires &wires, evl_statement &s) {
             }
         }
     }
-    if (!s.get_evl_tokens()->empty() || (state != DONE)) {
+    if (!s.get_evl_tokens().empty() || (state != DONE)) {
         std::cerr << "something wrong with the statement" << std::endl;
         return false;
     }

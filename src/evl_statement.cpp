@@ -16,9 +16,9 @@
 
 evl_statement::evl_statement() {}
 
-evl_statement::evl_statement(statement_type t, evl_tokens * const tok) : type(t), tokens(tok) {}
+evl_statement::evl_statement(statement_type t, evl_tokens tok) : type(t), tokens(tok) {}
 
-bool evl_statement::set(statement_type t, evl_tokens * const tok) {
+bool evl_statement::set(statement_type t, evl_tokens tok) {
     //,,,// return false if statement is not valid
     type = t;
     tokens = tok;
@@ -31,7 +31,7 @@ bool evl_statement::set_statement_type(statement_type t) {
     return true;
 }
 
-bool evl_statement::set_evl_tokens(evl_tokens * const tok) {
+bool evl_statement::set_evl_tokens(evl_tokens tok) {
     //...// return false if tokens are invalid
     tokens = tok;
     return true;
@@ -41,7 +41,7 @@ evl_statement::statement_type evl_statement::get_statement_type() const{
     return type;
 }
 
-evl_tokens * evl_statement::get_evl_tokens() const{
+evl_tokens evl_statement::get_evl_tokens() {
     return tokens;
 }
 
@@ -55,11 +55,10 @@ bool evl_statement::group_tokens_into_statements(evl_statements &statements, evl
         }
         if (token.get_string() == "module") { // MODULE statement
             //...
-            evl_statement module;
-            evl_tokens token_list;
-            module.set(evl_statement::MODULE, &token_list);
+            evl_tokens token_list; 
+            evl_statement *module = new evl_statement(evl_statement::MODULE, token_list);
             // Thinking of a function to replace the loop?
-            if (!move_tokens_to_statement(*module.get_evl_tokens(), tokens))
+            if (!move_tokens_to_statement(module.get_evl_tokens(), tokens))
                 return false;
             /* for (; !tokens.empty();) {
                 module.get_evl_tokens().push_back(tokens.front());
@@ -77,28 +76,23 @@ bool evl_statement::group_tokens_into_statements(evl_statements &statements, evl
         }   
         else if (token.get_string() == "endmodule") { // ENDMODULE statement
             //...
-            evl_statement endmodule;
             evl_tokens token_list;
-            endmodule.set(evl_statement::ENDMODULE, &token_list);
-            endmodule.get_evl_tokens()->push_back(token);
+            evl_statement *endmodule = new evl_statement(evl_statement::ENDMODULE, token_list);
+            endmodule.get_evl_tokens().push_back(token);
             tokens.pop_front();
             statements.push_back(endmodule);
         }
         else if (token.get_string() == "wire") { // WIRE statement
             //...
-            evl_statement wire;
-            evl_tokens token_list;
-            wire.set(evl_statement::WIRE, &token_list);
-            if (!move_tokens_to_statement(*wire.get_evl_tokens(), tokens))
+            evl_statement *wire = new evl_statement(evl_statement::WIRE, token_list);
+            if (!move_tokens_to_statement(wire.get_evl_tokens(), tokens))
                 return false;
             statements.push_back(wire);
         }
         else { // COMPONENT statement
             //...
-            evl_statement component;
-            evl_tokens token_list;
-            component.set(evl_statement::COMPONENT, &token_list);
-            if (!move_tokens_to_statement(*component.get_evl_tokens(), tokens)) 
+            evl_statement *component = new evl_statement(evl_statement::COMPONENT, token_list);
+            if (!move_tokens_to_statement(component.get_evl_tokens(), tokens)) 
                 return false;
             statements.push_back(component);
         }
@@ -126,13 +120,13 @@ bool evl_statement::move_tokens_to_statement(evl_tokens &statement_tokens, evl_t
 void evl_statement::display_statements(std::ostream &out, const std::vector<evl_statement> &statements) {
     for (size_t i = 0; i < statements.size(); ++i) {
         if (statements[i].get_statement_type() == evl_statement::MODULE) {
-            out << "module " << statements[i].get_evl_tokens() << std::endl;
+            out << "module " << statements[i].get_evl_tokens().begin().get_string() << std::endl;
         }
         else if (statements[i].get_statement_type() == evl_statement::WIRE) {
-            out << "wire " << statements[i].get_evl_tokens() << std::endl;
+            out << "wire " << statements[i].get_evl_tokens().begin().get_string() << std::endl;
         }
         else if (statements[i].get_statement_type() == evl_statement::COMPONENT) {
-            out << "component " << statements[i].get_evl_tokens() << std::endl;
+            out << "component " << statements[i].get_evl_tokens().begin().get_string() << std::endl;
         }
     }
 }   
