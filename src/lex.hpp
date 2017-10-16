@@ -8,9 +8,9 @@ class lex {
     
 public:
 
-    void remove_all_zeros(std::list<int> &integers);
+    static void remove_all_zeros(std::list<int> &integers);
 
-    void show_vector(const std::vector<int> &vec);
+    static void show_vector(const std::vector<int> &vec);
 
 };
 

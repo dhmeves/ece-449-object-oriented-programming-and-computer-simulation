@@ -41,7 +41,11 @@ evl_statement::statement_type evl_statement::get_statement_type() const{
     return type;
 }
 
-evl_tokens evl_statement::get_evl_tokens() {
+evl_tokens evl_statement::get_evl_tokens() const{
+    return tokens;
+}
+
+evl_tokens & evl_statement::get_evl_tokens_ref() {
     return tokens;
 }
 
@@ -53,12 +57,14 @@ bool evl_statement::group_tokens_into_statements(evl_statements &statements, evl
                 << "' on line " << token.get_line_no() << std::endl;
             return false;
         }
-        if (token.get_string() == "module") { // MODULE statement
+        else if (token.get_string() == "module") { // MODULE statement
             //...
-            evl_tokens token_list; 
-            evl_statement *module = new evl_statement(evl_statement::MODULE, token_list);
+            tokens.pop_front();         // consume token
+            evl_tokens token_list;
+            evl_statement module; 
+            module.set(evl_statement::MODULE, token_list);
             // Thinking of a function to replace the loop?
-            if (!move_tokens_to_statement(module.get_evl_tokens(), tokens))
+            if (!move_tokens_to_statement(module.get_evl_tokens_ref(), tokens))
                 return false;
             /* for (; !tokens.empty();) {
                 module.get_evl_tokens().push_back(tokens.front());
@@ -77,22 +83,29 @@ bool evl_statement::group_tokens_into_statements(evl_statements &statements, evl
         else if (token.get_string() == "endmodule") { // ENDMODULE statement
             //...
             evl_tokens token_list;
-            evl_statement *endmodule = new evl_statement(evl_statement::ENDMODULE, token_list);
-            endmodule.get_evl_tokens().push_back(token);
+            evl_statement endmodule;
+            endmodule.set(evl_statement::ENDMODULE, token_list);
+            endmodule.get_evl_tokens_ref().push_back(token);
             tokens.pop_front();
             statements.push_back(endmodule);
         }
         else if (token.get_string() == "wire") { // WIRE statement
-            //...
-            evl_statement *wire = new evl_statement(evl_statement::WIRE, token_list);
-            if (!move_tokens_to_statement(wire.get_evl_tokens(), tokens))
+            //... 
+            tokens.pop_front();         // consume token
+            evl_tokens token_list;
+            evl_statement wire; 
+            wire.set(evl_statement::WIRE, token_list);
+            if (!move_tokens_to_statement(wire.get_evl_tokens_ref(), tokens))
                 return false;
             statements.push_back(wire);
         }
         else { // COMPONENT statement
             //...
-            evl_statement *component = new evl_statement(evl_statement::COMPONENT, token_list);
-            if (!move_tokens_to_statement(component.get_evl_tokens(), tokens)) 
+            tokens.pop_front();         // consume token
+            evl_tokens token_list;
+            evl_statement component;
+            component.set(evl_statement::COMPONENT, token_list);
+            if (!move_tokens_to_statement(component.get_evl_tokens_ref(), tokens)) 
                 return false;
             statements.push_back(component);
         }
@@ -117,21 +130,21 @@ bool evl_statement::move_tokens_to_statement(evl_tokens &statement_tokens, evl_t
     return true;
 }
 
-void evl_statement::display_statements(std::ostream &out, const std::vector<evl_statement> &statements) {
+void evl_statement::display_statements(std::ostream &out, std::vector<evl_statement> &statements) {
     for (size_t i = 0; i < statements.size(); ++i) {
         if (statements[i].get_statement_type() == evl_statement::MODULE) {
-            out << "module " << statements[i].get_evl_tokens().begin().get_string() << std::endl;
+            out << "module " << statements[i].get_evl_tokens().front().get_string() << std::endl;
         }
         else if (statements[i].get_statement_type() == evl_statement::WIRE) {
-            out << "wire " << statements[i].get_evl_tokens().begin().get_string() << std::endl;
+            out << "wire " << statements[i].get_evl_tokens().front().get_string() << std::endl;
         }
         else if (statements[i].get_statement_type() == evl_statement::COMPONENT) {
-            out << "component " << statements[i].get_evl_tokens().begin().get_string() << std::endl;
+            out << "component " << statements[i].get_evl_tokens().front().get_string() << std::endl;
         }
     }
 }   
 
-bool evl_statement::store_statements_to_file(std::string file_name, const std::vector<evl_statement> &statements) {
+bool evl_statement::store_statements_to_file(std::string file_name, std::vector<evl_statement> &statements) {
     std::ofstream output_file(file_name.c_str());
     //... // verify output_file is ready
     if (!output_file)

@@ -32,7 +32,9 @@ public:
 
     statement_type get_statement_type() const;
 
-    evl_tokens get_evl_tokens();
+    evl_tokens get_evl_tokens() const;
+
+    evl_tokens & get_evl_tokens_ref();
 
 // Other methods
 
@@ -40,8 +42,8 @@ public:
 
     static bool move_tokens_to_statement(evl_tokens &statement_tokens, evl_tokens &tokens);
 
-    static void display_statements(std::ostream &out, const std::vector<evl_statement> &statements); 
+    static void display_statements(std::ostream &out, std::vector<evl_statement> &statements); 
 
-    static bool store_statements_to_file(std::string file_name, const std::vector<evl_statement> &statements); 
+    static bool store_statements_to_file(std::string file_name, std::vector<evl_statement> &statements); 
 
 }; // class evl_statement
