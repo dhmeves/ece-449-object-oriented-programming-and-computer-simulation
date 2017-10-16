@@ -12,21 +12,25 @@ private:
     
     evl_tokens tokens;
 
+    evl_wires_table wires_table;
+
 public:
 
 // Constructors
         
     evl_statement();
 
-    evl_statement(statement_type t, evl_tokens tok);
+    evl_statement(statement_type t, evl_tokens tok, evl_wires_table wire_tab);
 
 // Setters
 
-    bool set(statement_type t, evl_tokens tok);
+    bool set(statement_type t, evl_tokens tok, evl_wires_table wire_tab);
 
     bool set_statement_type(statement_type t);
 
     bool set_evl_tokens(evl_tokens tok);
+
+    bool set_evl_wires_table(evl_wires_table wire_tab);
 
 // Getters
 
@@ -35,6 +39,10 @@ public:
     evl_tokens get_evl_tokens() const;
 
     evl_tokens & get_evl_tokens_ref();
+
+    evl_wires_table get_evl_wires_table() const;
+
+    evl_wires_table & get_evl_wires_table_ref();
 
 // Other methods
 

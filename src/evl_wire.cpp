@@ -48,10 +48,11 @@ int evl_wire::get_width() const{
 
 bool evl_wire::process_wire_statement(evl_wires &wires, evl_statement &s) {
     //...
-    enum state_type {INIT, WIRE, DONE, WIRES, WIRE_NAME};
+    enum state_type {INIT, WIRE, DONE, WIRES, WIRE_NAME, BUS, BUS_MSB, BUS_COLON, BUS_LSB, BUS_DONE};
     state_type state = INIT;
-    for (; !s.get_evl_tokens().empty() && (state != DONE); s.get_evl_tokens().pop_front()) {
-        evl_token t = s.get_evl_tokens().front();
+    int bus_width = 1;
+    for (; !s.get_evl_tokens_ref().empty() && (state != DONE); s.get_evl_tokens_ref().pop_front()) {
+        evl_token t = s.get_evl_tokens_ref().front();
         //... // use branches here to compute state transitions
         if (state == INIT) {
             //...
@@ -66,6 +67,9 @@ bool evl_wire::process_wire_statement(evl_wires &wires, evl_statement &s) {
         }
         else if (state == WIRE) {
             //...
+            if (t.get_string() == "[") {
+                state = BUS;
+            }
             if (t.get_token_type() == evl_token::NAME) {
                 evl_wire wire;
                 wire.set(t.get_string(), 1);
@@ -81,6 +85,17 @@ bool evl_wire::process_wire_statement(evl_wires &wires, evl_statement &s) {
         else if (state == WIRES) {
             //...
             //... // same as the branch for WIRE
+            if (t.get_token_type() == evl_token::NAME) {
+                evl_wire wire;
+                wire.set(t.get_string(), 1);
+                wires.push_back(wire);
+                state = WIRE_NAME;
+            }
+            else {
+                std::cerr << "Need NAME but found '" << t.get_string() 
+                    << "' on line " << t.get_line_no() << std::endl;
+                return false;
+            }   
         }
         else if (state == WIRE_NAME) {
             //...
@@ -94,6 +109,35 @@ bool evl_wire::process_wire_statement(evl_wires &wires, evl_statement &s) {
                 std::cerr << "Need ’,’ or ’;’ but found ’" << t.get_string()
                     << "’ on line " << t.get_line_no() << std::endl;
                 return false;
+            }
+        }
+        else if (state == BUS) {
+            if (t.get_token_type() == evl_token::NUMBER) {
+                bus_width = atoi(t.get_string().c_str())+1;
+                state = BUS_MSB;
+            }
+        }
+        else if (state == BUS_MSB) {
+            if (t.get_string() == ":") {
+                state = BUS_COLON;
+            }
+        }
+        else if (state == BUS_COLON) {
+            if (t.get_string() == "0") {
+                state == BUS_LSB;
+            }
+        }
+        else if (state == BUS_LSB) {
+            if (t.get_string() == "]") {
+                state == BUS_DONE;
+            }
+        }
+        else if (state == BUS_DONE) {
+            if (t.get_token_type() == evl_token::NAME) {
+                evl_wire wire;
+                wire.set(t.get_string(), bus_width);
+                wires.push_back(wire);
+                state = WIRE_NAME;
             }
         }
     }

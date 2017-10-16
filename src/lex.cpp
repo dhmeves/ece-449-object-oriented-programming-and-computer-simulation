@@ -29,24 +29,6 @@ void lex::show_vector(const std::vector<int> &vec) {
     }
 }
 
-/* 
-    int bus_width = 1;
-        //...
-    for (...) {
-        //...
-        else if (state == BUS) {
-            if (t.type == evl_token::NUMBER) {
-                bus_width = atoi(t.str.c_str())+1;
-                state = BUS_MSB;
-            }
-            //...
-        }
-        //...
-    }
-    //...
-
-*/ 
-
 int main(int argc, char *argv[]) {
     if (argc < 2) {
         std::cerr << "You should provide a file name." << std::endl;
