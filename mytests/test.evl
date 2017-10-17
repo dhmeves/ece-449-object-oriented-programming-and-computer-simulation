@@ -1,7 +1,7 @@
 // a comment
 module top;
 
-   wire s0, s1, clk;
+   wire s3, s0, s1, clk;
 
    evl_clock(clk);
 

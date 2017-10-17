@@ -9,6 +9,7 @@
 #include <algorithm>
 #include <iterator>
 #include <map>
+#include <unordered_map>
 
 #include "lex.hpp"
 #include "evl_token.hpp"

@@ -8,6 +8,7 @@
 #include <algorithm>
 #include <iterator>
 #include <map>
+#include <unordered_map>
 
 #include "lex.hpp"
 #include "evl_token.hpp"
@@ -71,9 +72,9 @@ bool evl_wire::process_wire_statement(evl_wires &wires, evl_statement &s) {
                 state = BUS;
             }
             if (t.get_token_type() == evl_token::NAME) {
-                evl_wire wire;
-                wire.set(t.get_string(), 1);
-                wires.push_back(wire);
+                evl_wire wire0;
+                wire0.set(t.get_string(), 1);
+                wires.push_back(wire0);
                 state = WIRE_NAME;
             }
             else {
@@ -86,9 +87,9 @@ bool evl_wire::process_wire_statement(evl_wires &wires, evl_statement &s) {
             //...
             //... // same as the branch for WIRE
             if (t.get_token_type() == evl_token::NAME) {
-                evl_wire wire;
-                wire.set(t.get_string(), 1);
-                wires.push_back(wire);
+                evl_wire wire1;
+                wire1.set(t.get_string(), 1);
+                wires.push_back(wire1);
                 state = WIRE_NAME;
             }
             else {
@@ -134,9 +135,9 @@ bool evl_wire::process_wire_statement(evl_wires &wires, evl_statement &s) {
         }
         else if (state == BUS_DONE) {
             if (t.get_token_type() == evl_token::NAME) {
-                evl_wire wire;
-                wire.set(t.get_string(), bus_width);
-                wires.push_back(wire);
+                evl_wire wire2;
+                wire2.set(t.get_string(), bus_width);
+                wires.push_back(wire2);
                 state = WIRE_NAME;
             }
         }
@@ -163,11 +164,11 @@ bool evl_wire::make_wires_table(const evl_wires &wires, evl_wires_table &wires_t
 }
 
 void evl_wire::display_wires_table(std::ostream &out, const evl_wires_table &wires_table) {
-    for (evl_wires_table::const_iterator it = wires_table.begin();
+/*    for (evl_wires_table::const_iterator it = wires_table.begin();
         it != wires_table.end(); ++it) {
         out << "wire " << it->first
             << " " << it->second << std::endl;
-    }
+    }*/
     for (auto &kv: wires_table) {
         out << "wire " << kv.first
             << " " << kv.second << std::endl;

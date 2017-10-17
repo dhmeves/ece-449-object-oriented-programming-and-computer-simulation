@@ -8,6 +8,7 @@
 #include <algorithm>
 #include <iterator>
 #include <map>
+#include <unordered_map>
 
 #include "lex.hpp"
 #include "evl_token.hpp"
@@ -74,11 +75,10 @@ bool evl_statement::group_tokens_into_statements(evl_statements &statements, evl
         }
         else if (token.get_string() == "module") { // MODULE statement
             //...
-            tokens.pop_front();         // consume token
-            evl_tokens token_list;
+            evl_tokens token_list_mod;
             evl_statement module;
-            evl_wires_table wire_tab; 
-            module.set(evl_statement::MODULE, token_list, wire_tab);
+            evl_wires_table wire_tab_mod; 
+            module.set(evl_statement::MODULE, token_list_mod, wire_tab_mod);
             // Thinking of a function to replace the loop?
             if (!move_tokens_to_statement(module.get_evl_tokens_ref(), tokens))
                 return false;
@@ -98,41 +98,42 @@ bool evl_statement::group_tokens_into_statements(evl_statements &statements, evl
         }   
         else if (token.get_string() == "endmodule") { // ENDMODULE statement
             //...
-            evl_tokens token_list;
+            evl_tokens token_list_endmod;
             evl_statement endmodule;
-            evl_wires_table wire_tab;
-            endmodule.set(evl_statement::ENDMODULE, token_list, wire_tab);
+            evl_wires_table wire_tab_endmod;
+            endmodule.set(evl_statement::ENDMODULE, token_list_endmod, wire_tab_endmod);
             endmodule.get_evl_tokens_ref().push_back(token);
-            tokens.pop_front();
+            tokens.pop_front();     // consume last token
             statements.push_back(endmodule);
+            continue;
         }
         else if (token.get_string() == "wire") { // WIRE statement
             //...
-            evl_tokens token_list;
+            evl_tokens token_list_wir;
             evl_statement wire; 
-            evl_wires_table wire_tab;
-            wire.set(evl_statement::WIRE, token_list, wire_tab);
+            evl_wires_table wire_tab_wir;
+            wire.set(evl_statement::WIRE, token_list_wir, wire_tab_wir);
             evl_wires wire_vec;
             if (!move_tokens_to_statement(wire.get_evl_tokens_ref(), tokens))
                 return false;
             if (!evl_wire::process_wire_statement(wire_vec, wire)) 
                 return false;
-            tokens.pop_front(); 
             if (!evl_wire::make_wires_table(wire_vec, wire.get_evl_wires_table_ref())) 
                 return false;
             statements.push_back(wire);
-            //evl_wire::display_wires_table(std::cout, wire.get_evl_wires_table()); 
+            //evl_wire::display_wires_table(std::cout, wire.get_evl_wires_table());
+            continue; 
         }
         else { // COMPONENT statement
             //...
-            tokens.pop_front();         // consume token
-            evl_tokens token_list;
+            evl_tokens token_list_comp;
             evl_statement component;
-            evl_wires_table wire_tab;
-            component.set(evl_statement::COMPONENT, token_list, wire_tab);
+            evl_wires_table wire_tab_comp;
+            component.set(evl_statement::COMPONENT, token_list_comp, wire_tab_comp);
             if (!move_tokens_to_statement(component.get_evl_tokens_ref(), tokens)) 
                 return false;
             statements.push_back(component);
+            continue;
         }
     }
     return true;

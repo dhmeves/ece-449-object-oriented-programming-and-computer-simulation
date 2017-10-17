@@ -8,6 +8,7 @@
 #include <algorithm>
 #include <iterator>
 #include <map>
+#include <unordered_map>
 
 #include "lex.hpp"
 #include "evl_token.hpp"
@@ -125,9 +126,9 @@ bool evl_token::extract_tokens_from_line(std::string line, int line_no, std::vec
         }
         // SINGLE
         else if (is_character_a_single(line[i])) {
-            evl_token token;
-            token.set(evl_token::SINGLE, std::string(1, line[i]), line_no);
-            tokens.push_back(token);
+            evl_token token_single;
+            token_single.set(evl_token::SINGLE, std::string(1, line[i]), line_no);
+            tokens.push_back(token_single);
             ++i;
             continue;
         }
@@ -140,9 +141,9 @@ bool evl_token::extract_tokens_from_line(std::string line, int line_no, std::vec
                     break; // [name_begin, i) is the range for the token
                 }
             }
-            evl_token token;
-            token.set(evl_token::NAME, line.substr(name_begin, i-name_begin), line_no);
-            tokens.push_back(token);
+            evl_token token_name;
+            token_name.set(evl_token::NAME, line.substr(name_begin, i-name_begin), line_no);
+            tokens.push_back(token_name);
             continue;
         }
         //... // NUMBER token and error handling
@@ -154,9 +155,9 @@ bool evl_token::extract_tokens_from_line(std::string line, int line_no, std::vec
             if (!is_character_a_number(line[i]))
                 break;
             }   
-            evl_token token;
-            token.set(evl_token::NUMBER, line.substr(num, i-num), line_no);
-            tokens.push_back(token);
+            evl_token token_number;
+            token_number.set(evl_token::NUMBER, line.substr(num, i-num), line_no);
+            tokens.push_back(token_number);
         }
         else
         {
