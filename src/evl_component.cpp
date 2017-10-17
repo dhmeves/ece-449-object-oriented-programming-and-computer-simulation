@@ -1,4 +1,4 @@
-// evl_wire.cpp
+// evl_component.cpp
 #include <iostream>
 #include <fstream>
 #include <string>
@@ -16,67 +16,67 @@
 #include "evl_wire.hpp"
 #include "evl_component.hpp"
 
-evl_wire::evl_wire () {}
+evl_component::evl_component() {}
 
-evl_wire::evl_wire(std::string n, int w) : name(n), width(w) {
-}
+evl_component::evl_component(evl_token::token_type t, std::string n) : type(t), name(n) {}
 
-bool evl_wire::set(std::string n, int w) {
-    //...// return false if wire is invalid
-    name = n;
-    width = w;
-    return true;
-}
-
-bool evl_wire::set_name(std::string n) {
-    //...// return false if name is invalid
+bool evl_component::set(evl_token::token_type t, std::string n) {
+    //...// return false if component is not valid
+    type = t;
     name = n;
     return true;
 }
 
-bool evl_wire::set_width(int w) {
-    //...// return false if width is invalid
-    width = w;
+bool evl_component::set_type(evl_token::token_type t) {
+    //...// return false if component is not valid
+    type = t;
     return true;
 }
 
-std::string evl_wire::get_name() const{
+bool evl_component::set_name(std::string n) {
+    //...// return false if component is not valid
+    name = n;
+    return true;
+}
+
+evl_token::token_type evl_component::get_type() const {
+    return type;
+}
+
+std::string evl_component::get_name() const {
     return name;
 }
 
-int evl_wire::get_width() const{
-    return width;
-}
-
-bool evl_wire::process_wire_statement(evl_wires &wires, evl_statement &s) {
+bool evl_component::process_component_statement(evl_components &components, evl_statement &s) {
     //...
-    enum state_type {INIT, WIRE, DONE, WIRES, WIRE_NAME, BUS, BUS_MSB, BUS_COLON, BUS_LSB, BUS_DONE};
+    enum state_type {INIT, TYPE, DONE, NAME, PINS, PIN_NAME, PINS_DONE, BUS, BUS_MSB, BUS_COLON, BUS_LSB, BUS_DONE};
     state_type state = INIT;
     int bus_width = 1;
     for (; !s.get_evl_tokens_ref().empty() && (state != DONE); s.get_evl_tokens_ref().pop_front()) {
         evl_token t = s.get_evl_tokens_ref().front();
+        evl_component component;
         //... // use branches here to compute state transitions
         if (state == INIT) {
             //...
-            if (t.get_string() == "wire") {
-                state = WIRE;
+            if (t.get_token_type() == evl_token::NAME) {
+                component.set(t.get_token_type(), "")            
+                state = TYPE;
             }
             else {
-                std::cerr << "Need ’wire’ but found ’" << t.get_string()
+                std::cerr << "Need ’NAME’ but found ’" << t.get_string()
                     << "’ on line " << t.get_line_no() << std::endl;
                 return false;
             }
         }
-        else if (state == WIRE) {
+        else if (state == TYPE) {
             //...
-            if (t.get_string() == "[") {
-                state = BUS;
+            if (t.get_string() == "(") {
+                state = PINS;
             }
             if (t.get_token_type() == evl_token::NAME) {
-                evl_wire wire0;
-                wire0.set(t.get_string(), 1);
-                wires.push_back(wire0);
-                state = WIRE_NAME;
+                component.set_name(t.get_string());
+                components.push_back(component);
+                state = NAME;
             }
             else {
                 std::cerr << "Need NAME but found ’" << t.get_string()
@@ -84,32 +84,45 @@ bool evl_wire::process_wire_statement(evl_wires &wires, evl_statement &s) {
                 return false;
             }
         }
-        else if (state == WIRES) {
+        else if (state == NAME) {
             //...
             //... // same as the branch for WIRE
-            if (t.get_token_type() == evl_token::NAME) {
-                evl_wire wire1;
-                wire1.set(t.get_string(), 1);
-                wires.push_back(wire1);
-                state = WIRE_NAME;
+            if (t.get_string() == "(") {
+                state = PINS;
             }
             else {
-                std::cerr << "Need NAME but found '" << t.get_string() 
+                std::cerr << "Need ( but found '" << t.get_string() 
                     << "' on line " << t.get_line_no() << std::endl;
                 return false;
             }   
         }
-        else if (state == WIRE_NAME) {
+        else if (state == PINS) {
             //...
-            if (t.get_string() == ",") {
-                state = WIRES;
-            }
-            else if (t.get_string() == ";") {
-                state = DONE;
+            if (t.get_token_type() == evl_token::NAME) {
+                
+                state = PIN_NAME;
             }
             else {
                 std::cerr << "Need ’,’ or ’;’ but found ’" << t.get_string()
                     << "’ on line " << t.get_line_no() << std::endl;
+                return false;
+            }
+        }
+        else if (state == PIN_NAME) {
+            if (t.get_string() == "[") {
+                state = BUS;
+            }
+            else if (t.get_string() == ")") {
+                
+                state = PINS_DONE;
+            }
+            else if (t.get_string() == ",") {
+                
+                state = PINS;
+            }
+            else {
+                std::cerr << "Need '[' or ')' or ',' but found '" << t.get_string()
+                    << "' on line " << t.get_line_no() << std::endl;
                 return false;
             }
         }
@@ -148,30 +161,4 @@ bool evl_wire::process_wire_statement(evl_wires &wires, evl_statement &s) {
         return false;
     }
     return true;
-}
-
-bool evl_wire::make_wires_table(const evl_wires &wires, evl_wires_table &wires_table) {
-    for (auto &wire: wires) {
-        auto same_name = wires_table.find(wire.get_name());
-        if (same_name != wires_table.end()) {
-            std::cerr << "Wire '" << wire.get_name()
-                << "'is already defined" << std::endl;
-            return false;
-        }
-        //wires_table[wire.name] = wire.width;
-        wires_table.insert(std::make_pair(wire.get_name(), wire.get_width()));
-    }
-    return true;
-}
-
-void evl_wire::display_wires_table(std::ostream &out, const evl_wires_table &wires_table) {
-/*    for (evl_wires_table::const_iterator it = wires_table.begin();
-        it != wires_table.end(); ++it) {
-        out << "wire " << it->first
-            << " " << it->second << std::endl;
-    }*/
-    for (auto &kv: wires_table) {
-        out << "wire " << kv.first
-            << " " << kv.second << std::endl;
-    }
 }

@@ -2,6 +2,10 @@
 module top;
 
    wire s3, s0, s1, clk;
+    
+   wire s4[7:0], s5[7:0];
+
+   evl_dff(s4, s5, clk);
 
    evl_clock(clk);
 
