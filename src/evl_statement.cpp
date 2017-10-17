@@ -15,6 +15,7 @@
 #include "evl_statement.hpp"
 #include "evl_wire.hpp"
 #include "evl_component.hpp"
+#include "evl_pin.hpp"
 
 evl_statement::evl_statement() {}
 
@@ -131,7 +132,10 @@ bool evl_statement::group_tokens_into_statements(evl_statements &statements, evl
             evl_statement component;
             evl_wires_table wire_tab_comp;
             component.set(evl_statement::COMPONENT, token_list_comp, wire_tab_comp);
+            evl_components comp_vec;
             if (!move_tokens_to_statement(component.get_evl_tokens_ref(), tokens)) 
+                return false;
+            if (!evl_component::process_component_statement(comp_vec, component))
                 return false;
             statements.push_back(component);
             continue;

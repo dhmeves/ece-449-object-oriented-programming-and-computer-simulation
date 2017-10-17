@@ -23,6 +23,8 @@ class evl_wire;
 
 class evl_component;
 
+class evl_pin;
+
 typedef std::list<evl_token> evl_tokens;
 
 typedef std::list<evl_statement> evl_statements;
@@ -30,5 +32,7 @@ typedef std::list<evl_statement> evl_statements;
 typedef std::vector<evl_wire> evl_wires;
 
 typedef std::vector<evl_component> evl_components;
+
+typedef std::vector<evl_pin> evl_pins;
 
 typedef std::map<std::string, int> evl_wires_table;
