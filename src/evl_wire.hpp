@@ -33,7 +33,11 @@ public:
     static bool process_wire_statement(evl_wires &wires, evl_statement &s);
 
     static bool make_wires_table(const evl_wires &wires, evl_wires_table &wires_table);
- 
+
+    static bool make_wires_vector(const evl_wires &wires, evl_wires &wires_vector);
+    
     static void display_wires_table(std::ostream &out, const evl_wires_table &wires_table);  
+
+    static void display_wires_vector(std::ostream &out, const evl_wires &wires_vector); 
 
 }; // class evl_wire

@@ -18,13 +18,15 @@
 
 evl_statement::evl_statement() {}
 
-evl_statement::evl_statement(statement_type t, evl_tokens tok, evl_wires_table wire_tab, evl_component comp) : type(t), tokens(tok), wires_table(wire_tab), component(comp) {}
+evl_statement::evl_statement(statement_type t, evl_tokens tok, evl_wires_table wire_tab, evl_wires wv, evl_component comp) 
+    : type(t), tokens(tok), wires_table(wire_tab), wires_vector(wv), component(comp) {}
 
-bool evl_statement::set(statement_type t, evl_tokens tok, evl_wires_table wire_tab, evl_component comp) {
+bool evl_statement::set(statement_type t, evl_tokens tok, evl_wires_table wire_tab, evl_wires wv, evl_component comp) {
     //,,,// return false if statement is not valid
     type = t;
     tokens = tok;
     wires_table = wire_tab;
+    wires_vector = wv;
     component = comp;
     return true;
 }
@@ -44,6 +46,12 @@ bool evl_statement::set_evl_tokens(evl_tokens tok) {
 bool evl_statement::set_evl_wires_table(evl_wires_table wire_tab) {
     //...// return false if wires table is invalid
     wires_table = wire_tab;
+    return true;
+}
+
+bool evl_statement::set_evl_wires_vector(evl_wires wv) {
+    //...// return false if wires vector is invalid
+    wires_vector = wv;
     return true;
 }
 
@@ -73,6 +81,14 @@ evl_wires_table & evl_statement::get_evl_wires_table_ref() {
     return wires_table;
 }
 
+evl_wires evl_statement::get_evl_wires_vector() const{
+    return wires_vector;
+}
+
+evl_wires & evl_statement::get_evl_wires_vector_ref() {
+    return wires_vector;
+}
+
 evl_component evl_statement::get_evl_component() const{
     return component;
 }
@@ -94,8 +110,9 @@ bool evl_statement::group_tokens_into_statements(evl_statements &statements, evl
             evl_tokens token_list_mod;
             evl_statement module;
             evl_wires_table wire_tab_mod;
+            evl_wires wire_vec_mod;
             evl_component comp1; 
-            module.set(evl_statement::MODULE, token_list_mod, wire_tab_mod, comp1);
+            module.set(evl_statement::MODULE, token_list_mod, wire_tab_mod, wire_vec_mod, comp1);
             tokens.pop_front();
             // Thinking of a function to replace the loop?
             if (!move_tokens_to_statement(module.get_evl_tokens_ref(), tokens))
@@ -119,8 +136,9 @@ bool evl_statement::group_tokens_into_statements(evl_statements &statements, evl
             evl_tokens token_list_endmod;
             evl_statement endmodule;
             evl_wires_table wire_tab_endmod;
+            evl_wires wire_vec_endmod;
             evl_component comp2;
-            endmodule.set(evl_statement::ENDMODULE, token_list_endmod, wire_tab_endmod, comp2);
+            endmodule.set(evl_statement::ENDMODULE, token_list_endmod, wire_tab_endmod, wire_vec_endmod, comp2);
             endmodule.get_evl_tokens_ref().push_back(token);
             tokens.pop_front();     // consume last token
             statements.push_back(endmodule);
@@ -131,14 +149,17 @@ bool evl_statement::group_tokens_into_statements(evl_statements &statements, evl
             evl_tokens token_list_wir;
             evl_statement wire; 
             evl_wires_table wire_tab_wir;
+            evl_wires wire_vec_wir;
             evl_component comp3;
-            wire.set(evl_statement::WIRE, token_list_wir, wire_tab_wir, comp3);
+            wire.set(evl_statement::WIRE, token_list_wir, wire_tab_wir, wire_vec_wir, comp3);
             evl_wires wire_vec;
             if (!move_tokens_to_statement(wire.get_evl_tokens_ref(), tokens))
                 return false;
             if (!evl_wire::process_wire_statement(wire_vec, wire)) 
                 return false;
             if (!evl_wire::make_wires_table(wire_vec, wire.get_evl_wires_table_ref())) 
+                return false;
+            if (!evl_wire::make_wires_vector(wire_vec, wire.get_evl_wires_vector_ref()))
                 return false;
             statements.push_back(wire);
             //evl_wire::display_wires_table(std::cout, wire.get_evl_wires_table());
@@ -149,8 +170,9 @@ bool evl_statement::group_tokens_into_statements(evl_statements &statements, evl
             evl_tokens token_list_comp;
             evl_statement component;
             evl_wires_table wire_tab_comp;
+            evl_wires wire_vec_comp;
             evl_component comp0;
-            component.set(evl_statement::COMPONENT, token_list_comp, wire_tab_comp, comp0);
+            component.set(evl_statement::COMPONENT, token_list_comp, wire_tab_comp, wire_vec_comp, comp0);
             if (!move_tokens_to_statement(component.get_evl_tokens_ref(), tokens)) 
                 return false;
             if (!evl_component::process_component_statement(component))
@@ -187,7 +209,8 @@ void evl_statement::display_statements(std::ostream &out, std::vector<evl_statem
         }
         else if (statements[i].get_statement_type() == evl_statement::WIRE) {
             out << "wires " << statements[i].get_evl_wires_table().size() << std::endl;
-            evl_wire::display_wires_table(out, statements[i].get_evl_wires_table());
+            //evl_wire::display_wires_table(out, statements[i].get_evl_wires_table());
+            evl_wire::display_wires_vector(out, statements[i].get_evl_wires_vector());
         }
         else if (statements[i].get_statement_type() == evl_statement::COMPONENT) {
             component_count++;

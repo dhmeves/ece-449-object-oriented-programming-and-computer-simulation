@@ -164,6 +164,21 @@ bool evl_wire::make_wires_table(const evl_wires &wires, evl_wires_table &wires_t
     return true;
 }
 
+bool evl_wire::make_wires_vector(const evl_wires &wires, evl_wires &wires_vector) {
+    for (auto &wire: wires) {
+/*        evl_wires::iterator same_name = std::find_if(wires_vector.begin(), wires_vector.end(), wire.get_name());
+        if (same_name != wires_vector.end()) {
+            std::cerr << "Wire '" << wire.get_name()
+                << "'is already defined" << std::endl;
+            return false;
+        }
+        //wires_table[wire.name] = wire.width;
+        //wires_table.insert(std::make_pair(wire.get_name(), wire.get_width()));*/
+        wires_vector.push_back(wire);
+    }
+    return true;
+}
+
 void evl_wire::display_wires_table(std::ostream &out, const evl_wires_table &wires_table) {
 /*    for (evl_wires_table::const_iterator it = wires_table.begin();
         it != wires_table.end(); ++it) {
@@ -173,5 +188,17 @@ void evl_wire::display_wires_table(std::ostream &out, const evl_wires_table &wir
     for (auto &kv: wires_table) {
         out << "wire " << kv.first
             << " " << kv.second << std::endl;
+    }
+}
+
+void evl_wire::display_wires_vector(std::ostream &out, const evl_wires &wires_vector) {
+/*    for (evl_wires_table::const_iterator it = wires_table.begin();
+        it != wires_table.end(); ++it) {
+        out << "wire " << it->first
+            << " " << it->second << std::endl;
+    }*/
+    for (auto &kv: wires_vector) {
+        out << "wire " << kv.get_name()
+            << " " << kv.get_width() << std::endl;
     }
 }
