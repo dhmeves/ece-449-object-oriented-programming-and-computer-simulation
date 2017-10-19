@@ -96,6 +96,7 @@ bool evl_statement::group_tokens_into_statements(evl_statements &statements, evl
             evl_wires_table wire_tab_mod;
             evl_component comp1; 
             module.set(evl_statement::MODULE, token_list_mod, wire_tab_mod, comp1);
+            tokens.pop_front();
             // Thinking of a function to replace the loop?
             if (!move_tokens_to_statement(module.get_evl_tokens_ref(), tokens))
                 return false;
