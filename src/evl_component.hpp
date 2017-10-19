@@ -38,6 +38,6 @@ public:
 
 // Other Methods
 
-    static bool process_component_statement(evl_components &components, evl_statement &s);
+    static bool process_component_statement(evl_statement &s);
 
 };

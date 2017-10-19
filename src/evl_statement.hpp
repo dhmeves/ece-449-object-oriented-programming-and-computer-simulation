@@ -1,5 +1,7 @@
 // evl_statement.hpp
 
+#include "evl_component.hpp"
+
 class evl_statement {
 
 public:
@@ -14,23 +16,27 @@ private:
 
     evl_wires_table wires_table;
 
+    evl_component component;
+
 public:
 
 // Constructors
         
     evl_statement();
 
-    evl_statement(statement_type t, evl_tokens tok, evl_wires_table wire_tab);
+    evl_statement(statement_type t, evl_tokens tok, evl_wires_table wire_tab, evl_component comp);
 
 // Setters
 
-    bool set(statement_type t, evl_tokens tok, evl_wires_table wire_tab);
+    bool set(statement_type t, evl_tokens tok, evl_wires_table wire_tab, evl_component comp);
 
     bool set_statement_type(statement_type t);
 
     bool set_evl_tokens(evl_tokens tok);
 
     bool set_evl_wires_table(evl_wires_table wire_tab);
+
+    bool set_evl_component(evl_component comp);
 
 // Getters
 
@@ -43,6 +49,10 @@ public:
     evl_wires_table get_evl_wires_table() const;
 
     evl_wires_table & get_evl_wires_table_ref();
+
+    evl_component get_evl_component() const;
+
+    evl_component & get_evl_component_ref();
 
 // Other methods
 

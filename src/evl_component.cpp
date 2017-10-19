@@ -14,7 +14,6 @@
 #include "evl_token.hpp"
 #include "evl_statement.hpp"
 #include "evl_wire.hpp"
-#include "evl_component.hpp"
 #include "evl_pin.hpp"
 
 evl_component::evl_component() {}
@@ -63,15 +62,15 @@ evl_pins & evl_component::get_pin_vector_ref() {
     return pin_vector;
 }
 
-bool evl_component::process_component_statement(evl_components &components, evl_statement &s) {
+bool evl_component::process_component_statement(evl_statement &s) {
     //...
     enum state_type {INIT, TYPE, DONE, NAME, PINS, PIN_NAME, PINS_DONE, BUS, BUS_MSB, BUS_COLON, BUS_LSB, BUS_DONE};
     state_type state = INIT;
+    evl_pins pin_vec;
+    evl_component component = s.get_evl_component_ref();
     for (; !s.get_evl_tokens_ref().empty() && (state != DONE); s.get_evl_tokens_ref().pop_front()) {
         evl_token t = s.get_evl_tokens_ref().front();
-        evl_component component;
         evl_pin pin;
-        evl_pins pin_vec;
         //... // use branches here to compute state transitions
         if (state == INIT) {
             //...
@@ -90,7 +89,7 @@ bool evl_component::process_component_statement(evl_components &components, evl_
             if (t.get_string() == "(") {
                 state = PINS;
             }
-            if (t.get_token_type() == evl_token::NAME) {
+            else if (t.get_token_type() == evl_token::NAME) {
                 component.set_name(t.get_string());
                 state = NAME;
             }
