@@ -67,15 +67,14 @@ bool evl_component::process_component_statement(evl_statement &s) {
     enum state_type {INIT, TYPE, DONE, NAME, PINS, PIN_NAME, PINS_DONE, BUS, BUS_MSB, BUS_COLON, BUS_LSB, BUS_DONE};
     state_type state = INIT;
     evl_pins pin_vec;
-    evl_component component = s.get_evl_component_ref();
+    evl_pin pin;
     for (; !s.get_evl_tokens_ref().empty() && (state != DONE); s.get_evl_tokens_ref().pop_front()) {
         evl_token t = s.get_evl_tokens_ref().front();
-        evl_pin pin;
         //... // use branches here to compute state transitions
         if (state == INIT) {
             //...
             if (t.get_token_type() == evl_token::NAME) {
-                component.set(t.get_token_type(), "", pin_vec);            
+                s.get_evl_component_ref().set(t.get_token_type(), t.get_string(), pin_vec);            
                 state = TYPE;
             }
             else {
@@ -90,7 +89,7 @@ bool evl_component::process_component_statement(evl_statement &s) {
                 state = PINS;
             }
             else if (t.get_token_type() == evl_token::NAME) {
-                component.set_name(t.get_string());
+                s.get_evl_component_ref().set_name(t.get_string());
                 state = NAME;
             }
             else {
@@ -128,11 +127,11 @@ bool evl_component::process_component_statement(evl_statement &s) {
                 state = BUS;
             }
             else if (t.get_string() == ")") {
-                component.get_pin_vector_ref().push_back(pin);                
+                s.get_evl_component_ref().get_pin_vector_ref().push_back(pin);                
                 state = PINS_DONE;
             }
             else if (t.get_string() == ",") {
-                component.get_pin_vector_ref().push_back(pin);
+                s.get_evl_component_ref().get_pin_vector_ref().push_back(pin);
                 state = PINS;
             }
             else {
@@ -173,11 +172,11 @@ bool evl_component::process_component_statement(evl_statement &s) {
         }
         else if (state == BUS_DONE) {
             if (t.get_string() == ")") {
-                component.get_pin_vector_ref().push_back(pin);
+                s.get_evl_component_ref().get_pin_vector_ref().push_back(pin);
                 state = PINS_DONE;
             }
             else if (t.get_string() == ",") {
-                component.get_pin_vector_ref().push_back(pin);
+                s.get_evl_component_ref().get_pin_vector_ref().push_back(pin);
                 state = PINS;
             }
         }
