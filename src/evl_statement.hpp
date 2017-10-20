@@ -1,4 +1,6 @@
 // evl_statement.hpp
+#ifndef GUARD_STATEMENT_H
+#define GUARD_STATEMENT_H
 
 #include "evl_component.hpp"
 
@@ -73,3 +75,5 @@ public:
     static bool store_statements_to_file(std::string file_name, std::vector<evl_statement> &statements); 
 
 }; // class evl_statement
+
+#endif

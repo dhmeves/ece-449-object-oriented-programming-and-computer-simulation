@@ -1,4 +1,6 @@
 // evl_token.hpp
+#ifndef GUARD_TOKEN_H
+#define GUARD_TOKEN_H
 
 #include <string>
 
@@ -69,3 +71,5 @@ public:
     static bool has_semicolon(const std::vector<evl_token> &tokens);
 
 }; // class evl_token
+
+#endif

@@ -14,6 +14,7 @@
 #include "evl_token.hpp"
 #include "evl_statement.hpp"
 #include "evl_wire.hpp"
+#include "evl_component.hpp"
 #include "evl_pin.hpp"
 
 evl_statement::evl_statement() {}

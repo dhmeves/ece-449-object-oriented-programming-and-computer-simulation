@@ -1,9 +1,10 @@
 // lex.hpp
+#ifndef GUARD_LEX_H
+#define GUARD_LEX_H
 
 #include <list>
 #include <vector>
 #include <map>
-#include <unordered_map>
 
 class lex {
     
@@ -36,3 +37,5 @@ typedef std::vector<evl_component> evl_components;
 typedef std::vector<evl_pin> evl_pins;
 
 typedef std::map<std::string, int> evl_wires_table;
+
+#endif

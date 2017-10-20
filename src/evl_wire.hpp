@@ -1,4 +1,6 @@
 // evl_wire.hpp
+#ifndef GUARD_WIRE_H
+#define GUARD_WIRE_H
 
 class evl_wire {
 
@@ -41,3 +43,5 @@ public:
     static void display_wires_vector(std::ostream &out, const evl_wires &wires_vector); 
 
 }; // class evl_wire
+
+#endif

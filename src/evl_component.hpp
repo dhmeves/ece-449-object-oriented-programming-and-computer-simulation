@@ -1,4 +1,6 @@
 // evl_component.hpp
+#ifndef GUARD_COMPONENT_H
+#define GUARD_COMPONENT_H
 
 class evl_component {
 
@@ -41,3 +43,5 @@ public:
     static bool process_component_statement(evl_statement &s);
 
 };
+
+#endif

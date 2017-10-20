@@ -1,4 +1,6 @@
 // evl_pin.hpp
+#ifndef GUARD_PIN_H
+#define GUARD_PIN_H
 
 class evl_pin {
     
@@ -37,3 +39,5 @@ public:
 // Other Methods    
 
 };
+
+#endif

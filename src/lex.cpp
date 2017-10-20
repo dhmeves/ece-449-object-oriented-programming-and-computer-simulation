@@ -15,6 +15,7 @@
 #include "evl_token.hpp"
 #include "evl_statement.hpp"
 #include "evl_wire.hpp"
+#include "evl_component.hpp"
 #include "evl_pin.hpp"
 
 void lex::remove_all_zeros(std::list<int> &integers) {
