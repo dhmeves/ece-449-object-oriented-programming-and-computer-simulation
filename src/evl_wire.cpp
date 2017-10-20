@@ -73,7 +73,7 @@ bool evl_wire::process_wire_statement(evl_wires &wires, evl_statement &s) {
             if (t.get_string() == "[") {
                 state = BUS;
             }
-            if (t.get_token_type() == evl_token::NAME) {
+            else if (t.get_token_type() == evl_token::NAME) {
                 evl_wire wire0;
                 wire0.set(t.get_string(), 1);
                 wires.push_back(wire0);

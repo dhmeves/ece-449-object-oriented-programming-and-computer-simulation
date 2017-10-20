@@ -160,6 +160,7 @@ bool evl_token::extract_tokens_from_line(std::string line, int line_no, std::vec
             evl_token token_number;
             token_number.set(evl_token::NUMBER, line.substr(num, i-num), line_no);
             tokens.push_back(token_number);
+            continue;
         }
         else
         {
