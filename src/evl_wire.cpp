@@ -93,7 +93,7 @@ bool evl_wire::process_wire_statement(evl_wires &wires, evl_statement &s) {
             //... // same as the branch for WIRE
             if (t.get_token_type() == evl_token::NAME) {
                 evl_wire wire1;
-                wire1.set(t.get_string(), 1);
+                wire1.set(t.get_string(), bus_width);
                 wires.push_back(wire1);
                 state = WIRE_NAME;
                 continue;
