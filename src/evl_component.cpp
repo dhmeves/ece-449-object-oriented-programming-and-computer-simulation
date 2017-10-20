@@ -19,9 +19,9 @@
 
 evl_component::evl_component() {}
 
-evl_component::evl_component(evl_token::token_type t, std::string n, evl_pins pv) : type(t), name(n), pin_vector(pv) {}
+evl_component::evl_component(std::string t, std::string n, evl_pins pv) : type(t), name(n), pin_vector(pv) {}
 
-bool evl_component::set(evl_token::token_type t, std::string n, evl_pins pv) {
+bool evl_component::set(std::string t, std::string n, evl_pins pv) {
     //...// return false if component is not valid
     type = t;
     name = n;
@@ -29,7 +29,7 @@ bool evl_component::set(evl_token::token_type t, std::string n, evl_pins pv) {
     return true;
 }
 
-bool evl_component::set_type(evl_token::token_type t) {
+bool evl_component::set_type(std::string t) {
     //...// return false if component is not valid
     type = t;
     return true;
@@ -47,7 +47,7 @@ bool evl_component::set_pin_vector(evl_pins pv) {
     return true;
 }
 
-evl_token::token_type evl_component::get_type() const {
+std::string evl_component::get_type() const {
     return type;
 }
 
@@ -75,7 +75,7 @@ bool evl_component::process_component_statement(evl_statement &s) {
         if (state == INIT) {
             //...
             if (t.get_token_type() == evl_token::NAME) {
-                s.get_evl_component_ref().set(t.get_token_type(), t.get_string(), pin_vec);            
+                s.get_evl_component_ref().set(t.get_string(), "", pin_vec);            
                 state = TYPE;
                 continue;
             }
@@ -92,7 +92,7 @@ bool evl_component::process_component_statement(evl_statement &s) {
                 continue;
             }
             else if (t.get_token_type() == evl_token::NAME) {
-                s.get_evl_component_ref().set_name(t.get_string());
+                s.get_evl_component_ref().set_name(" "+t.get_string());
                 state = NAME;
                 continue;
             }

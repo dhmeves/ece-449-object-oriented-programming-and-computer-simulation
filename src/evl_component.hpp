@@ -4,7 +4,7 @@
 
 class evl_component {
 
-    evl_token::token_type type;    
+    std::string type;    
 
     std::string name;
     
@@ -16,13 +16,13 @@ public:
 
     evl_component();
 
-    evl_component(evl_token::token_type t, std::string n, evl_pins pv);
+    evl_component(std::string t, std::string n, evl_pins pv);
 
 // Setters
 
-    bool set(evl_token::token_type t, std::string n, evl_pins pv);
+    bool set(std::string t, std::string n, evl_pins pv);
 
-    bool set_type(evl_token::token_type t);
+    bool set_type(std::string t);
 
     bool set_name(std::string n);
 
@@ -30,7 +30,7 @@ public:
 
 // Getters
 
-    evl_token::token_type get_type() const;
+    std::string get_type() const;
 
     std::string get_name() const;
 
