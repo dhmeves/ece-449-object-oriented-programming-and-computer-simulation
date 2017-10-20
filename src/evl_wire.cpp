@@ -61,6 +61,7 @@ bool evl_wire::process_wire_statement(evl_wires &wires, evl_statement &s) {
             //...
             if (t.get_string() == "wire") {
                 state = WIRE;
+                continue;
             }
             else {
                 std::cerr << "Need ’wire’ but found ’" << t.get_string()
@@ -72,12 +73,14 @@ bool evl_wire::process_wire_statement(evl_wires &wires, evl_statement &s) {
             //...
             if (t.get_string() == "[") {
                 state = BUS;
+                continue;
             }
             else if (t.get_token_type() == evl_token::NAME) {
                 evl_wire wire0;
                 wire0.set(t.get_string(), 1);
                 wires.push_back(wire0);
                 state = WIRE_NAME;
+                continue;
             }
             else {
                 std::cerr << "Need NAME but found ’" << t.get_string()
@@ -93,6 +96,7 @@ bool evl_wire::process_wire_statement(evl_wires &wires, evl_statement &s) {
                 wire1.set(t.get_string(), 1);
                 wires.push_back(wire1);
                 state = WIRE_NAME;
+                continue;
             }
             else {
                 std::cerr << "Need NAME but found '" << t.get_string() 
@@ -104,9 +108,11 @@ bool evl_wire::process_wire_statement(evl_wires &wires, evl_statement &s) {
             //...
             if (t.get_string() == ",") {
                 state = WIRES;
+                continue;
             }
             else if (t.get_string() == ";") {
                 state = DONE;
+                continue;
             }
             else {
                 std::cerr << "Need ’,’ or ’;’ but found ’" << t.get_string()
@@ -118,21 +124,25 @@ bool evl_wire::process_wire_statement(evl_wires &wires, evl_statement &s) {
             if (t.get_token_type() == evl_token::NUMBER) {
                 bus_width = atoi(t.get_string().c_str())+1;
                 state = BUS_MSB;
+                continue;
             }
         }
         else if (state == BUS_MSB) {
             if (t.get_string() == ":") {
                 state = BUS_COLON;
+                continue;
             }
         }
         else if (state == BUS_COLON) {
             if (t.get_string() == "0") {
-                state == BUS_LSB;
+                state = BUS_LSB;
+                continue;
             }
         }
         else if (state == BUS_LSB) {
             if (t.get_string() == "]") {
-                state == BUS_DONE;
+                state = BUS_DONE;
+                continue;
             }
         }
         else if (state == BUS_DONE) {
@@ -141,6 +151,7 @@ bool evl_wire::process_wire_statement(evl_wires &wires, evl_statement &s) {
                 wire2.set(t.get_string(), bus_width);
                 wires.push_back(wire2);
                 state = WIRE_NAME;
+                continue;
             }
         }
     }

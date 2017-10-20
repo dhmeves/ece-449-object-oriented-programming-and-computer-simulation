@@ -163,12 +163,12 @@ bool evl_component::process_component_statement(evl_statement &s) {
         else if (state == BUS_COLON) {
             if (t.get_token_type() == evl_token::NUMBER) {
                 pin.set_bus_lsb(atoi(t.get_string().c_str()));
-                state == BUS_LSB;
+                state = BUS_LSB;
             }
         }
         else if (state == BUS_LSB) {
             if (t.get_string() == "]") {
-                state == BUS_DONE;
+                state = BUS_DONE;
             }
         }
         else if (state == BUS_DONE) {

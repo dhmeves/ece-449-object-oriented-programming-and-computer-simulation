@@ -48,7 +48,7 @@ int main(int argc, char *argv[]) {
         return -1;
     }
     // Copy token vector to token list and print out 
-/*    evl_tokens token_list;
+    evl_tokens token_list;
     std::copy(tokens.begin(), tokens.end(), std::back_inserter(token_list));
     for (auto v : token_list)
         std::cout << v.get_token_type() << v.get_string() << v.get_line_no() << "\n";
@@ -61,6 +61,6 @@ int main(int argc, char *argv[]) {
     evl_statement::display_statements(std::cout, statement_vec);
     if (!evl_statement::store_statements_to_file(evl_file+".syntax", statement_vec)) {
         return -1;
-    }*/
+    }
     return 0;
 }
