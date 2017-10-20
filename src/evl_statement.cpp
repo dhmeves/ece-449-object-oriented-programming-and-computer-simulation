@@ -203,6 +203,7 @@ bool evl_statement::move_tokens_to_statement(evl_tokens &statement_tokens, evl_t
 }
 
 void evl_statement::display_statements(std::ostream &out, std::vector<evl_statement> &statements) {
+    int wire_count = 0;    
     int component_count = 0;
     for (size_t i = 0; i < statements.size(); ++i) {
         if (statements[i].get_statement_type() == evl_statement::MODULE) {
@@ -210,7 +211,9 @@ void evl_statement::display_statements(std::ostream &out, std::vector<evl_statem
             continue;
         }
         else if (statements[i].get_statement_type() == evl_statement::WIRE) {
-            out << "wires " << statements[i].get_evl_wires_table().size() << std::endl;
+            wire_count++;
+            continue;
+            out << "wires " << statements[i].get_evl_wires_vector().size() << std::endl;
             //evl_wire::display_wires_table(out, statements[i].get_evl_wires_table());
             evl_wire::display_wires_vector(out, statements[i].get_evl_wires_vector());
             continue;
@@ -220,6 +223,10 @@ void evl_statement::display_statements(std::ostream &out, std::vector<evl_statem
             continue;
         }
     }
+    out << "wires " << wire_count << std::endl;
+    for (size_t l = 0; l < statements.size(); ++l) {
+        evl_wire::display_wires_vector(out, statements[l].get_evl_wires_vector());
+    }  
     out << "components " << component_count << std::endl;
     for (size_t j = 0; j < statements.size(); ++j) {
         if (statements[j].get_statement_type() == evl_statement::COMPONENT) {
