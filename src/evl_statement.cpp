@@ -211,11 +211,8 @@ void evl_statement::display_statements(std::ostream &out, std::vector<evl_statem
             continue;
         }
         else if (statements[i].get_statement_type() == evl_statement::WIRE) {
-            wire_count++;
-            continue;
-            out << "wires " << statements[i].get_evl_wires_vector().size() << std::endl;
-            //evl_wire::display_wires_table(out, statements[i].get_evl_wires_table());
-            evl_wire::display_wires_vector(out, statements[i].get_evl_wires_vector());
+            int temp = statements[i].get_evl_wires_vector().size();
+            wire_count += temp;
             continue;
         }
         else if (statements[i].get_statement_type() == evl_statement::COMPONENT) {
@@ -233,7 +230,11 @@ void evl_statement::display_statements(std::ostream &out, std::vector<evl_statem
             out << "component " << statements[j].get_evl_component_ref().get_name() << " " 
                 << statements[j].get_evl_component_ref().get_pin_vector_ref().size() << std::endl;
             for (size_t k = 0; k < statements[j].get_evl_component_ref().get_pin_vector_ref().size(); ++k) {
-                out << "pin " << statements[j].get_evl_component_ref().get_pin_vector_ref()[k].get_name() << std::endl;
+                if (statements[j].get_evl_component_ref()
+
+                out << "pin " << statements[j].get_evl_component_ref().get_pin_vector_ref()[k].get_name() << " "
+                    << statements[j].get_evl_component_ref().get_pin_vector_ref()[k].get_bus_msb() 
+                    << statements[j].get_evl_component_ref().get_pin_vector_ref()[k].get_bus_lsb() << std::endl;
             }
             continue;
         }        

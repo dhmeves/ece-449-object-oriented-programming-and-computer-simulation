@@ -77,6 +77,7 @@ bool evl_component::process_component_statement(evl_statement &s) {
             if (t.get_token_type() == evl_token::NAME) {
                 s.get_evl_component_ref().set(t.get_token_type(), t.get_string(), pin_vec);            
                 state = TYPE;
+                continue;
             }
             else {
                 std::cerr << "Need ’NAME’ but found ’" << t.get_string()
@@ -88,10 +89,12 @@ bool evl_component::process_component_statement(evl_statement &s) {
             //...
             if (t.get_string() == "(") {
                 state = PINS;
+                continue;
             }
             else if (t.get_token_type() == evl_token::NAME) {
                 s.get_evl_component_ref().set_name(t.get_string());
                 state = NAME;
+                continue;
             }
             else {
                 std::cerr << "Need NAME but found ’" << t.get_string()
@@ -104,6 +107,7 @@ bool evl_component::process_component_statement(evl_statement &s) {
             //... // same as the branch for WIRE
             if (t.get_string() == "(") {
                 state = PINS;
+                continue;
             }
             else {
                 std::cerr << "Need ( but found '" << t.get_string() 
@@ -116,6 +120,7 @@ bool evl_component::process_component_statement(evl_statement &s) {
             if (t.get_token_type() == evl_token::NAME) {
                 pin.set(t.get_string(), -1, -1);
                 state = PIN_NAME;
+                continue;
             }
             else {
                 std::cerr << "Need NAME but found ’" << t.get_string()
@@ -126,14 +131,17 @@ bool evl_component::process_component_statement(evl_statement &s) {
         else if (state == PIN_NAME) {
             if (t.get_string() == "[") {
                 state = BUS;
+                continue;
             }
             else if (t.get_string() == ")") {
                 s.get_evl_component_ref().get_pin_vector_ref().push_back(pin);                
                 state = PINS_DONE;
+                continue;
             }
             else if (t.get_string() == ",") {
                 s.get_evl_component_ref().get_pin_vector_ref().push_back(pin);
                 state = PINS;
+                continue;
             }
             else {
                 std::cerr << "Need '[' or ')' or ',' but found '" << t.get_string()
@@ -145,6 +153,7 @@ bool evl_component::process_component_statement(evl_statement &s) {
             if (t.get_token_type() == evl_token::NUMBER) {
                 pin.set_bus_msb(atoi(t.get_string().c_str()));
                 state = BUS_MSB;
+                continue;
             }
             else {
                 std::cerr << "Need NUMBER but found '" << t.get_string()
@@ -155,35 +164,42 @@ bool evl_component::process_component_statement(evl_statement &s) {
         else if (state == BUS_MSB) {
             if (t.get_string() == ":") {
                 state = BUS_COLON;
+                continue;
             }
             else if (t.get_string() == "]") {
                 state = BUS_DONE;
+                continue;
             }
         }
         else if (state == BUS_COLON) {
             if (t.get_token_type() == evl_token::NUMBER) {
                 pin.set_bus_lsb(atoi(t.get_string().c_str()));
                 state = BUS_LSB;
+                continue;
             }
         }
         else if (state == BUS_LSB) {
             if (t.get_string() == "]") {
                 state = BUS_DONE;
+                continue;
             }
         }
         else if (state == BUS_DONE) {
             if (t.get_string() == ")") {
                 s.get_evl_component_ref().get_pin_vector_ref().push_back(pin);
                 state = PINS_DONE;
+                continue;
             }
             else if (t.get_string() == ",") {
                 s.get_evl_component_ref().get_pin_vector_ref().push_back(pin);
                 state = PINS;
+                continue;
             }
         }
         else if (state == PINS_DONE) {
             if (t.get_string() == ";") {
                 state = DONE;
+                continue;
             }
         }
     }
