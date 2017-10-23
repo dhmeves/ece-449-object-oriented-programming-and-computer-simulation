@@ -48,3 +48,10 @@ bool netlist::create_gate(const evl_component &c, const evl_wires_table &wires_t
 netlist::~netlist() {
     // ... // delete pointers stored in gates_ and nets_
 }
+
+void netlist::compute_next_state_and_output() {
+    for (net *n: nets_)
+        n->set_signal(’?’);
+    for (gate *g: gates_)
+        g->compute_next_state_or_output();
+}

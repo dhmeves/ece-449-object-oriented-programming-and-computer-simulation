@@ -12,3 +12,11 @@ bool pin::create(gate *g, size_t index, const evl_pin &p, const std::map<std::st
        // ... //
     }
 }
+
+char pin::compute_signal() {
+    if (dir_ == ’O’)
+        return gate_->compute_signal(index_);
+    else // dir_ == ’I’
+        return net_->get_signal();
+}
+
