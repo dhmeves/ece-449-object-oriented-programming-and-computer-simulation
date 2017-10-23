@@ -16,10 +16,21 @@
 #include "evl_wire.hpp"
 #include "evl_component.hpp"
 #include "evl_pin.hpp"
+#include "netlist.hpp"
+#include "net.hpp"
+#include "gate.hpp"
+#include "pin.hpp"
+#include "Vec.hpp"
+
+// Constructors
 
 evl_token::evl_token() {}
 
 evl_token::evl_token(token_type t, std::string s, int l) : type(t), str(s), line_no(l) {}
+
+// Destructors
+
+// Setters
 
 bool evl_token::set(token_type t, std::string s, int l) {
     //...// return false if token is not valid
@@ -47,6 +58,8 @@ bool evl_token::set_line_no(int l) {
     return true;
 }  
 
+// Getters
+
 evl_token::token_type evl_token::get_token_type() const {
     return type;
 } 
@@ -58,6 +71,8 @@ std::string evl_token::get_string() const {
 int evl_token::get_line_no() const {
     return line_no;
 } 
+
+// Other Methods
 
 bool evl_token::is_character_a_comment(char ch) {
     return (ch == '/');

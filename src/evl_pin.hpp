@@ -18,6 +18,8 @@ public:
 
     evl_pin(std::string n, int msb, int lsb);
 
+// Destructors
+
 // Setters
 
     bool set(std::string n, int msb, int lsb);

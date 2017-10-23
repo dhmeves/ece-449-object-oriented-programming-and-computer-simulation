@@ -10,12 +10,24 @@ class lex {
     
 public:
 
+// Constructors
+
+// Destructors
+
+// Setters
+
+// Getters
+
+// Other Methods
+
     static void remove_all_zeros(std::list<int> &integers);
 
     static void show_vector(const std::vector<int> &vec);
 
     static bool parse_evl_file(std::string evl_file, std::string &module_name, evl_wires &wires, evl_components &comps);
 };
+
+// Forward Declarations
 
 class evl_token;
 
@@ -34,6 +46,8 @@ class gate;
 class net;
 
 class pin;
+
+// Type Definitions
 
 typedef std::list<evl_token> evl_tokens;
 

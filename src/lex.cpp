@@ -17,6 +17,11 @@
 #include "evl_wire.hpp"
 #include "evl_component.hpp"
 #include "evl_pin.hpp"
+#include "netlist.hpp"
+#include "net.hpp"
+#include "gate.hpp"
+#include "pin.hpp"
+#include "Vec.hpp"
 
 void lex::remove_all_zeros(std::list<int> &integers) {
     auto to_be_erased = std::remove_if(

@@ -16,6 +16,8 @@ public:
 
     evl_wire(std::string n, int w);
 
+// Destructors
+
 // Setters
 
     bool set(std::string n, int w);

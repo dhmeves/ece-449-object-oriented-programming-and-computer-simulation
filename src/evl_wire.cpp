@@ -16,11 +16,21 @@
 #include "evl_wire.hpp"
 #include "evl_component.hpp"
 #include "evl_pin.hpp"
+#include "netlist.hpp"
+#include "net.hpp"
+#include "gate.hpp"
+#include "pin.hpp"
+#include "Vec.hpp"
+
+// Constructors
 
 evl_wire::evl_wire () {}
 
-evl_wire::evl_wire(std::string n, int w) : name(n), width(w) {
-}
+evl_wire::evl_wire(std::string n, int w) : name(n), width(w) {}
+
+// Destructors
+
+// Setters
 
 bool evl_wire::set(std::string n, int w) {
     //...// return false if wire is invalid
@@ -41,6 +51,8 @@ bool evl_wire::set_width(int w) {
     return true;
 }
 
+// Getters
+
 std::string evl_wire::get_name() const{
     return name;
 }
@@ -48,6 +60,8 @@ std::string evl_wire::get_name() const{
 int evl_wire::get_width() const{
     return width;
 }
+
+// Other Methods
 
 bool evl_wire::process_wire_statement(evl_wires &wires, evl_statement &s) {
     //...

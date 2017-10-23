@@ -16,10 +16,21 @@
 #include "evl_wire.hpp"
 #include "evl_component.hpp"
 #include "evl_pin.hpp"
+#include "netlist.hpp"
+#include "net.hpp"
+#include "gate.hpp"
+#include "pin.hpp"
+#include "Vec.hpp"
+
+// Constructors
 
 evl_pin::evl_pin() {}
 
 evl_pin::evl_pin(std::string n, int msb, int lsb) : name(n), bus_msb(msb), bus_lsb(lsb) {}
+
+// Destructors
+
+// Setters
 
 bool evl_pin::set(std::string n, int msb, int lsb) {
     //...// return false if pin is not valid
@@ -47,6 +58,8 @@ bool evl_pin::set_bus_lsb(int lsb) {
     return true;
 }
 
+// Getters
+
 std::string evl_pin::get_name() const{
     return name;
 }
@@ -58,3 +71,5 @@ int evl_pin::get_bus_msb() const{
 int evl_pin::get_bus_lsb() const{
     return bus_lsb;
 }
+
+// Other Methods

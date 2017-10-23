@@ -16,10 +16,21 @@
 #include "evl_wire.hpp"
 #include "evl_component.hpp"
 #include "evl_pin.hpp"
+#include "netlist.hpp"
+#include "net.hpp"
+#include "gate.hpp"
+#include "pin.hpp"
+#include "Vec.hpp"
+
+// Constructors
 
 evl_component::evl_component() {}
 
 evl_component::evl_component(std::string t, std::string n, evl_pins pv) : type(t), name(n), pin_vector(pv) {}
+
+// Destructors
+
+// Setters
 
 bool evl_component::set(std::string t, std::string n, evl_pins pv) {
     //...// return false if component is not valid
@@ -47,6 +58,8 @@ bool evl_component::set_pin_vector(evl_pins pv) {
     return true;
 }
 
+// Getters
+
 std::string evl_component::get_type() const {
     return type;
 }
@@ -62,6 +75,8 @@ evl_pins evl_component::get_pin_vector() const{
 evl_pins & evl_component::get_pin_vector_ref() {
     return pin_vector;
 }
+
+// Other Methods
 
 bool evl_component::process_component_statement(evl_statement &s) {
     //...

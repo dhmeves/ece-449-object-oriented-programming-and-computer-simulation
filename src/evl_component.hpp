@@ -18,6 +18,8 @@ public:
 
     evl_component(std::string t, std::string n, evl_pins pv);
 
+// Destructors
+
 // Setters
 
     bool set(std::string t, std::string n, evl_pins pv);

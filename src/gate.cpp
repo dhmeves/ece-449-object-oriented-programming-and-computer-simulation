@@ -1,5 +1,88 @@
 // gate.cpp
+
+#include <iostream>
+#include <fstream>
+#include <string>
+#include <vector>
+#include <list>
+#include <assert.h>
+#include <algorithm>
+#include <iterator>
+#include <map>
+#include <unordered_map>
+
+#include "lex.hpp"
+#include "evl_token.hpp"
+#include "evl_statement.hpp"
+#include "evl_wire.hpp"
+#include "evl_component.hpp"
+#include "evl_pin.hpp"
+#include "netlist.hpp"
+#include "net.hpp"
 #include "gate.hpp"
+#include "pin.hpp"
+#include "Vec.hpp"
+
+// Constructors
+
+gate::gate() {}
+
+gate::gate(std::string n, std::string t, std::vector<pin *> p) : name_(n), type_(t), pins_(p) {}
+
+// Destructors
+
+gate::~gate() {
+    for (size_t i = 0; i < pins_.size(); ++i)
+        delete pins_[i];
+}
+
+// Setters
+
+bool gate::set(std::string n, std::string t, std::vector<pin *> p) {
+    //,..// return false if gate is invalid
+    name_ = n;
+    type_ = t;
+    pins_ = p;
+    return true;
+}
+
+bool gate::set_name_(std::string n){
+    //...// return false if name is invalid
+    name_ = n;
+    return true;
+}
+
+bool gate::set_type_(std::string t){
+    //...// return false if type is invalid
+    type_ = t;
+    return true;
+}
+
+bool gate::set_pins_(std:vector<pin *> p) {
+    //...// return false if pins are invalid
+    pins_ = p;
+    return true;
+}
+
+// Getters
+
+std::string gate::get_name_() const {
+    return name_;
+}
+
+std::string gate::get_type_() const {
+    return type_
+}
+
+std::vector<pin *> gate::get_pins_() const {
+    return pins_;
+}
+
+std::vector<pin *> & gate::get_pins_ref() {
+    return pins_;
+}
+
+// Other Methods
 
 bool gate::create(const evl_component &c, const std::map<std::string, net *> &nets_table, const evl_wires_table &wires_table) {
     // set gate type and name;
@@ -16,11 +99,6 @@ bool gate::create_pin(const evl_pin &ep, size_t index, const std::map<std::strin
     pin *p = new pin;
     pins_.push_back(p);
     return p->create(this, index, ep, nets_table);
-}
-
-gate::~gate() {
-    for (size_t i = 0; i < pins_.size(); ++i)
-        delete pins_[i];
 }
 
 void gate::compute_next_state_or_output() {
@@ -63,4 +141,3 @@ bool gate::validate_structural_semantics() {
     }
     //...//
 }
-

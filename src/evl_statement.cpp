@@ -16,11 +16,22 @@
 #include "evl_wire.hpp"
 #include "evl_component.hpp"
 #include "evl_pin.hpp"
+#include "netlist.hpp"
+#include "net.hpp"
+#include "gate.hpp"
+#include "pin.hpp"
+#include "Vec.hpp"
+
+// Constructors
 
 evl_statement::evl_statement() {}
 
 evl_statement::evl_statement(statement_type t, evl_tokens tok, evl_wires_table wire_tab, evl_wires wv, evl_component comp) 
     : type(t), tokens(tok), wires_table(wire_tab), wires_vector(wv), component(comp) {}
+
+// Destructors
+
+// Setters
 
 bool evl_statement::set(statement_type t, evl_tokens tok, evl_wires_table wire_tab, evl_wires wv, evl_component comp) {
     //,,,// return false if statement is not valid
@@ -62,6 +73,8 @@ bool evl_statement::set_evl_component(evl_component comp) {
     return true;
 }
 
+// Getters
+
 evl_statement::statement_type evl_statement::get_statement_type() const{
     return type;
 }
@@ -97,6 +110,8 @@ evl_component evl_statement::get_evl_component() const{
 evl_component & evl_statement::get_evl_component_ref() {
     return component;
 }
+
+// Other Methods
 
 bool evl_statement::group_tokens_into_statements(evl_statements &statements, evl_tokens &tokens) {
     for (; !tokens.empty();) { // generate one statement per iteration

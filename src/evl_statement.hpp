@@ -30,6 +30,8 @@ public:
 
     evl_statement(statement_type t, evl_tokens tok, evl_wires_table wire_tab, evl_wires wv, evl_component comp);
 
+// Destructors
+
 // Setters
 
     bool set(statement_type t, evl_tokens tok, evl_wires_table wire_tab, evl_wires wv, evl_component comp);
