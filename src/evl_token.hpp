@@ -1,6 +1,6 @@
 // evl_token.hpp
-#ifndef GUARD_TOKEN_H
-#define GUARD_TOKEN_H
+#ifndef GUARD_EVL_TOKEN_H
+#define GUARD_EVL_TOKEN_H
 
 #include <string>
 

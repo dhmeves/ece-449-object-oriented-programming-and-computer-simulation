@@ -1,6 +1,6 @@
 // evl_wire.hpp
-#ifndef GUARD_WIRE_H
-#define GUARD_WIRE_H
+#ifndef GUARD_EVL_WIRE_H
+#define GUARD_EVL_WIRE_H
 
 class evl_wire {
 

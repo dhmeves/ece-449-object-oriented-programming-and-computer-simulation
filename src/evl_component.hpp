@@ -1,6 +1,6 @@
 // evl_component.hpp
-#ifndef GUARD_COMPONENT_H
-#define GUARD_COMPONENT_H
+#ifndef GUARD_EVL_COMPONENT_H
+#define GUARD_EVL_COMPONENT_H
 
 class evl_component {
 

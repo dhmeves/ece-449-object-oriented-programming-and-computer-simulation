@@ -14,6 +14,7 @@ public:
 
     static void show_vector(const std::vector<int> &vec);
 
+    static bool parse_evl_file(std::string evl_file, std::string &module_name, evl_wires &wires, evl_components &comps);
 };
 
 class evl_token;
@@ -25,6 +26,14 @@ class evl_wire;
 class evl_component;
 
 class evl_pin;
+
+class netlist;
+
+class gate;
+
+class net;
+
+class pin;
 
 typedef std::list<evl_token> evl_tokens;
 

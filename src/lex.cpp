@@ -62,5 +62,22 @@ int main(int argc, char *argv[]) {
     if (!evl_statement::store_statements_to_file(evl_file+".syntax", statement_vec)) {
         return -1;
     }
+/*
+    // ... // validate arguments
+    std::string module_name;
+    evl_wires wires;
+    evl_components comps;
+    if (!parse_evl_file(argv[1], module_name, wires, comps))
+        return -1;
+    evl_wires_table wires_table;
+    if (!make_wires_table(wires, wires_table))
+        return -1;
+    netlist nl;
+    if (!nl.create(wires, comps, wires_table))
+        return -1;
+    std::string nl_file = std::string(argv[1])+".netlist";
+    nl.save(nl_file, module_name); // save the netlist for Project 3
+    nl.simulate(1000); // simulate 1000 cycles for Project 4
+*/
     return 0;
 }

@@ -1,6 +1,6 @@
 // evl_pin.hpp
-#ifndef GUARD_PIN_H
-#define GUARD_PIN_H
+#ifndef GUARD_EVL_PIN_H
+#define GUARD_EVL_PIN_H
 
 class evl_pin {
     

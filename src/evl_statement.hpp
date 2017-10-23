@@ -1,6 +1,6 @@
 // evl_statement.hpp
-#ifndef GUARD_STATEMENT_H
-#define GUARD_STATEMENT_H
+#ifndef GUARD_EVL_STATEMENT_H
+#define GUARD_EVL_STATEMENT_H
 
 #include "evl_component.hpp"
 
