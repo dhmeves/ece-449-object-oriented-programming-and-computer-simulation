@@ -15,6 +15,8 @@ public:
 // Constructors
 
     net();
+    
+    net(std::string n);
 
     net(std::string n, char s, std::list<pin *> c);     
 
@@ -24,7 +26,7 @@ public:
 
     bool set(std::string n, char s, std::list<pin *> c);
 
-    bool set_name_(std:string n);
+    bool set_name_(std::string n);
 
     bool set_signal_(char s);
 
@@ -42,9 +44,9 @@ public:
 
 // Other Methods
 
-    static void append_pin(pin *p);
+    void append_pin(pin *p);
 
-    static char get_signal();
+    char get_signal();
 
 }; // class net
 

@@ -21,7 +21,7 @@
 #include "net.hpp"
 #include "gate.hpp"
 #include "pin.hpp"
-#include "Vec.hpp"
+//#include "Vec.hpp"
 
 void lex::remove_all_zeros(std::list<int> &integers) {
     auto to_be_erased = std::remove_if(
@@ -74,15 +74,28 @@ int main(int argc, char *argv[]) {
     evl_components comps;
     if (!parse_evl_file(argv[1], module_name, wires, comps))
         return -1;
+*/
+    // This is gonna get ugly
+    evl_wires wires;
+    for (auto s : statements) {
+        evl_wire::make_wires_vector(s.get_evl_wires_vector(), wires);
+    }
+    evl_wire::display_wires_vector(std::cout, wires);
+    evl_components comps;
+    for (auto s: statements) {
+        comps.push_back(s.get_evl_component_ref());
+    }
+    std::string module_name = statement_vec[0].get_evl_tokens().front().get_string();
     evl_wires_table wires_table;
-    if (!make_wires_table(wires, wires_table))
+    if (!evl_wire::make_wires_table(wires, wires_table))
         return -1;
     netlist nl;
     if (!nl.create(wires, comps, wires_table))
         return -1;
     std::string nl_file = std::string(argv[1])+".netlist";
     nl.save(nl_file, module_name); // save the netlist for Project 3
-    nl.simulate(1000); // simulate 1000 cycles for Project 4
-*/
+
+//    nl.simulate(1000); // simulate 1000 cycles for Project 4
+
     return 0;
 }

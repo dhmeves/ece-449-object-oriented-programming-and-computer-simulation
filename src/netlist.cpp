@@ -10,6 +10,7 @@
 #include <iterator>
 #include <map>
 #include <unordered_map>
+#include <sstream>
 
 #include "lex.hpp"
 #include "evl_token.hpp"
@@ -21,7 +22,7 @@
 #include "net.hpp"
 #include "gate.hpp"
 #include "pin.hpp"
-#include "Vec.hpp"
+//#include "Vec.hpp"
 
 // Constructors
 
@@ -96,19 +97,20 @@ bool netlist::create(const evl_wires &wires, const evl_components &comps, const 
 }
 
 bool netlist::create_nets(const evl_wires &wires) {
-    for each wire w in wires {
-        if (width of w == 1) {
-            create_net(w);
+    for (auto &w : wires) {
+        if (w.get_width() == 1) {
+            create_net(w.get_name());
         }
         else {
-            for (int i = 0; i < width of w; ++i) {
-                create_net(w[i]);
+            for (int i = 0; i < w.get_width(); ++i) {
+                create_net(make_net_name(w.get_name(), i));
             }
         }
     }
+    return true;
 }
 
-std::string make_net_name(std::string wire_name, int i) {
+std::string netlist::make_net_name(std::string wire_name, int i) {
     assert(i >= 0);
     std::ostringstream oss;
     oss << wire_name << "[" << i << "]";
@@ -123,9 +125,10 @@ void netlist::create_net(std::string net_name) {
 }
 
 bool netlist::create_gates(const evl_components &comps, const evl_wires_table &wires_table) {
-    for each component c in comps {
+    for (auto &c : comps) {
         create_gate(c, wires_table);
     }
+    return true;
 }
 
 bool netlist::create_gate(const evl_component &c, const evl_wires_table &wires_table) {
@@ -134,9 +137,33 @@ bool netlist::create_gate(const evl_component &c, const evl_wires_table &wires_t
     return g->create(c, nets_table_, wires_table);
 }
 
+bool netlist::save(std::string nl_fl, std::string mod_name) {
+    std::ofstream output_file(nl_fl.c_str());
+    //... // verify output_file is ready
+    if (!output_file) {
+        std::cerr << "I can't write " << nl_fl << std::endl;
+        return false;
+    }
+    output_file << "module " << mod_name << std::endl;
+    std::vector<net *> net_ptr_vec{std::begin(nets_), std::end(nets_)};
+    std::vector<gate *> gate_ptr_vec{std::begin(gates_), std::end(gates_)};
+    output_file << "nets " << net_ptr_vec.size() << std::endl;
+    for (auto n : net_ptr_vec) {
+        output_file << "net " << n->get_name_() << " " << n->get_connections_().size() << std::endl;
+        std::vector<pin *> pin_ptr_vec{std::begin(n->get_connections_ref()), std::end(n->get_connections_ref())};
+        for (int i = 0; i < n->get_connections_().size(); ++i) {
+            output_file << gate_ptr_vec[i]->get_type_() << "[" << gate_ptr_vec[i]->get_name_() << "] " << i << std::endl;
+        }
+    }
+    return true;
+}
+
+// project 4
+/*
 void netlist::compute_next_state_and_output() {
     for (net *n: nets_)
-        n->set_signal(’?’);
+        n->set_signal_('?');
     for (gate *g: gates_)
         g->compute_next_state_or_output();
 }
+*/

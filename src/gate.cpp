@@ -21,7 +21,7 @@
 #include "net.hpp"
 #include "gate.hpp"
 #include "pin.hpp"
-#include "Vec.hpp"
+//#include "Vec.hpp"
 
 // Constructors
 
@@ -58,7 +58,7 @@ bool gate::set_type_(std::string t){
     return true;
 }
 
-bool gate::set_pins_(std:vector<pin *> p) {
+bool gate::set_pins_(std::vector<pin *> p) {
     //...// return false if pins are invalid
     pins_ = p;
     return true;
@@ -71,7 +71,7 @@ std::string gate::get_name_() const {
 }
 
 std::string gate::get_type_() const {
-    return type_
+    return type_;
 }
 
 std::vector<pin *> gate::get_pins_() const {
@@ -87,7 +87,7 @@ std::vector<pin *> & gate::get_pins_ref() {
 bool gate::create(const evl_component &c, const std::map<std::string, net *> &nets_table, const evl_wires_table &wires_table) {
     // set gate type and name;
     size_t index = 0;
-    for each evl_pin ep in c {
+    for (auto &ep : c.get_pin_vector()) {
         create_pin(ep, index, nets_table, wires_table);
         ++index;
     }
@@ -101,30 +101,33 @@ bool gate::create_pin(const evl_pin &ep, size_t index, const std::map<std::strin
     return p->create(this, index, ep, nets_table);
 }
 
+// project 4
+/*
 void gate::compute_next_state_or_output() {
     if (type_ == "evl_dff") {
-        next_state_ = pins_[1]->compute_signal(); // d
+        auto next_state_ = pins_[1]->compute_signal(); // d
     }
     else if (type_ == "evl_output") {
-        collect signal from all pins and write to file
+        //collect signal from all pins and write to file
     }
 }
 
 char gate::compute_signal(int pin_index) {
     if (type_ == "evl_dff") {
-        assert pin_index == 0; // must be q
+        assert(pin_index == 0); // must be q
         return state_;
     }
     else if (type_ == "evl_zero") {
-        return ’0’;
+        return '0';
     }
     else if (type_ == "and") {
-        assert pin_index == 0; // must be out
-        collect signals from the input pins
-        compute and return the output signal
+        assert(pin_index == 0); // must be out
+//        collect signals from the input pins
+//        compute and return the output signal
     }
     //...//
 }
+*/
 
 bool gate::validate_structural_semantics() {
     if (type_ == "and") {
@@ -140,4 +143,5 @@ bool gate::validate_structural_semantics() {
         pins_[2]->set_as_input(); // clk
     }
     //...//
+    return true;
 }

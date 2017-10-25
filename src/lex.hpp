@@ -6,27 +6,6 @@
 #include <vector>
 #include <map>
 
-class lex {
-    
-public:
-
-// Constructors
-
-// Destructors
-
-// Setters
-
-// Getters
-
-// Other Methods
-
-    static void remove_all_zeros(std::list<int> &integers);
-
-    static void show_vector(const std::vector<int> &vec);
-
-    static bool parse_evl_file(std::string evl_file, std::string &module_name, evl_wires &wires, evl_components &comps);
-};
-
 // Forward Declarations
 
 class evl_token;
@@ -60,5 +39,28 @@ typedef std::vector<evl_component> evl_components;
 typedef std::vector<evl_pin> evl_pins;
 
 typedef std::map<std::string, int> evl_wires_table;
+
+// lex.hpp
+
+class lex {
+    
+public:
+
+// Constructors
+
+// Destructors
+
+// Setters
+
+// Getters
+
+// Other Methods
+
+    static void remove_all_zeros(std::list<int> &integers);
+
+    static void show_vector(const std::vector<int> &vec);
+
+    static bool parse_evl_file(std::string evl_file, std::string &module_name, evl_wires &wires, evl_components &comps);
+};
 
 #endif

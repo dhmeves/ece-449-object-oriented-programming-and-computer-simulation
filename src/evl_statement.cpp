@@ -20,7 +20,7 @@
 #include "net.hpp"
 #include "gate.hpp"
 #include "pin.hpp"
-#include "Vec.hpp"
+//#include "Vec.hpp"
 
 // Constructors
 
@@ -273,7 +273,7 @@ bool evl_statement::store_statements_to_file(std::string file_name, std::vector<
     if (!output_file)
     {
         std::cerr << "I can't write " << file_name << ".syntax ." << std::endl;
-        return -1;
+        return false;
     }
     // almost the same loop as display_tokens
     display_statements(output_file, statements);

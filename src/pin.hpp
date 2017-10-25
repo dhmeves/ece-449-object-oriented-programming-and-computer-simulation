@@ -18,6 +18,8 @@ public:
 
     pin();
 
+    pin(gate *g, size_t i);
+
     pin(char d, gate *g, size_t i, net *n);
 
 // Destructors
@@ -33,6 +35,10 @@ public:
     bool set_index_(size_t i);
 
     bool set_net_ptr(net *n);
+
+    bool set_as_input();
+
+    bool set_as_output();
 
 // Getters
 
@@ -50,9 +56,9 @@ public:
 
 // Other Methods
 
-    static bool create(gate *g, size_t index, const evl_pin &p, const std::map<std::string, net *> &nets_table);
+    bool create(gate *g, size_t index, const evl_pin &p, const std::map<std::string, net *> &nets_table);
 
-    static char compute_signal();
+    char compute_signal();
 
 }; // class pin
 

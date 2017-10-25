@@ -30,7 +30,7 @@ public:
 
     bool set_type_(std::string t);
 
-    bool set_pins_(std:vector<pin *> p);
+    bool set_pins_(std::vector<pin *> p);
 
 // Getters
 
@@ -44,15 +44,15 @@ public:
 
 //Other methods
 
-    static bool create(const evl_component &c, const std::map<std::string, net *> &nets_table, const evl_wires_table &wires_table);
+    bool create(const evl_component &c, const std::map<std::string, net *> &nets_table, const evl_wires_table &wires_table);
 
-    static bool create_pin(const evl_pin &ep, size_t index, const std::map<std::string, net *> &nets_table, const evl_wires_table &wires_table);
+    bool create_pin(const evl_pin &ep, size_t index, const std::map<std::string, net *> &nets_table, const evl_wires_table &wires_table);
 
-    static void compute_next_state_or_output();
+    void compute_next_state_or_output();
 
-    static char compute_signal(int pin_index); 
+    char compute_signal(int pin_index); 
 
-    static bool validate_structural_semantics();
+    bool validate_structural_semantics();
 
 }; // class gate
 

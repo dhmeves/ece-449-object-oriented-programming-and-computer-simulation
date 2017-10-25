@@ -48,19 +48,21 @@ public:
 
 // Other Methods
 
-    static bool create(const evl_wires &wires, const evl_components &comps, const evl_wires_table &wires_table);
+    bool create(const evl_wires &wires, const evl_components &comps, const evl_wires_table &wires_table);
 
-    static bool create_nets(const evl_wires &wires);
+    bool create_nets(const evl_wires &wires);
 
-    static std::string make_net_name(std::string wire_name, int i);
+    std::string make_net_name(std::string wire_name, int i);
 
-    static void create_net(std::string net_name);
+    void create_net(std::string net_name);
 
-    static bool create_gates(const evl_components &comps, const evl_wires_table &wires_table);
+    bool create_gates(const evl_components &comps, const evl_wires_table &wires_table);
 
-    static bool create_gate(const evl_component &c, const evl_wires_table &wires_table);
+    bool create_gate(const evl_component &c, const evl_wires_table &wires_table);
 
-    static void compute_next_state_and_output();
+    bool save(std::string nl_fl, std::string mod_name);
+
+    void compute_next_state_and_output();
 
 }; // class netlist
 

@@ -21,11 +21,13 @@
 #include "net.hpp"
 #include "gate.hpp"
 #include "pin.hpp"
-#include "Vec.hpp"
+//#include "Vec.hpp"
 
 // Constructors
 
     pin::pin() {}
+
+    pin::pin(gate *g, size_t i) : gate_(g), index_(i) {}
 
     pin::pin(char d, gate *g, size_t i, net *n) : dir_(d), gate_(g), index_(i), net_(n) {}
 
@@ -66,6 +68,16 @@
         return true;
     }
 
+    bool pin::set_as_input() {
+        set_dir_('I');
+        return true;
+    }
+
+    bool pin::set_as_output() {
+        set_dir_('O');
+        return true;
+    }
+
 // Getters
 
     char pin::get_dir_() const {
@@ -95,19 +107,30 @@
 // Other Methods
 bool pin::create(gate *g, size_t index, const evl_pin &p, const std::map<std::string, net *> &nets_table) {
     // store g and index;
-    if (p.msb == -1) { // a 1-bit wire
-        net_name = p.name;
-        net_ = find net_name in nets_table
-        net_->append_pin(pin);
+    pin *pn = new pin(g, index);
+    if (p.get_bus_msb() == -1) { // a 1-bit wire
+        auto net_name = p.get_name();
+        auto net_ = nets_table.find(net_name);
+        if (net_ != nets_table.end()) {
+            net_->second->append_pin(pn);
+        }
+        else {
+            std::cerr << "Pin not found in nets table" << std::endl;
+            return false;
+        }
     }
     else { // a bus
        // ... //
     }
+    return true;
 }
 
+// project 4
+/*
 char pin::compute_signal() {
-    if (dir_ == ’O’)
+    if (dir_ == '0')
         return gate_->compute_signal(index_);
     else // dir_ == ’I’
-        return net_->get_signal();
+        return net_->get_signal_();
 }
+*/

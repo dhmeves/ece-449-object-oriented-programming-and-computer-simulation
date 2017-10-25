@@ -21,11 +21,13 @@
 #include "net.hpp"
 #include "gate.hpp"
 #include "pin.hpp"
-#include "Vec.hpp"
+//#include "Vec.hpp"
 
 // Constructors
 
 net::net() {}
+
+net::net(std::string n) : name_(n) {}
 
 net::net(std::string n, char s, std::list<pin *> c) : name_(n), signal_(s), connections_(c) {}
 
@@ -41,7 +43,7 @@ bool net::set(std::string n, char s, std::list<pin *> c) {
     return true;
 }
 
-bool net::set_name_(std:string n) {
+bool net::set_name_(std::string n) {
     //...// return false if name is invalid
     name_ = n;
     return true;
@@ -83,10 +85,14 @@ void net::append_pin(pin *p) {
     connections_.push_back(p);
 }
 
+// project 4?
+
+/*
+
 char net::get_signal() {
-    if (signal_ == ’?’) {
+    if (signal_ == '?') {
         auto it = std::find_if(connections_.begin(), connections_.end(),
-            [](pin *p) {p->get_dir() == ’O’;});
+            [](pin *p) {p->get_dir_() == '0';});
         if (it == connections_.end())
             throw std::runtime_exception("floating net");
         pin *driver = *it;
@@ -94,3 +100,4 @@ char net::get_signal() {
     }
     return signal_;
 }
+*/
