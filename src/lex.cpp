@@ -83,12 +83,22 @@ int main(int argc, char *argv[]) {
     evl_wire::display_wires_vector(std::cout, wires);
     evl_components comps;
     for (auto s: statements) {
-        comps.push_back(s.get_evl_component_ref());
+        if (s.get_statement_type() == evl_statement::COMPONENT)
+            comps.push_back(s.get_evl_component_ref());
+    }
+    for (auto &c: comps) { 
+        if (c.get_pin_vector_ref().size() != 0) {
+            std::cout << c.get_type() << " " << c.get_name() << std::endl;
+            for (int i = 0; i < c.get_pin_vector_ref().size(); ++i) {
+                std::cout << "  " << c.get_pin_vector_ref()[i].get_name() << " " << c.get_pin_vector_ref()[i].get_bus_msb() << " " << c.get_pin_vector_ref()[i].get_bus_lsb() << std::endl;
+            }
+        }
     }
     std::string module_name = statement_vec[0].get_evl_tokens().front().get_string();
     evl_wires_table wires_table;
     if (!evl_wire::make_wires_table(wires, wires_table))
         return -1;
+    evl_wire::display_wires_table(std::cout, wires_table);
     netlist nl;
     if (!nl.create(wires, comps, wires_table))
         return -1;

@@ -27,6 +27,8 @@
 
 gate::gate() {}
 
+gate::gate(std::string n, std::string t) : name_(n), type_(t) {}
+
 gate::gate(std::string n, std::string t, std::vector<pin *> p) : name_(n), type_(t), pins_(p) {}
 
 // Destructors
@@ -86,6 +88,8 @@ std::vector<pin *> & gate::get_pins_ref() {
 
 bool gate::create(const evl_component &c, const std::map<std::string, net *> &nets_table, const evl_wires_table &wires_table) {
     // set gate type and name;
+    name_ = c.get_name();
+    type_ = c.get_type();
     size_t index = 0;
     for (auto &ep : c.get_pin_vector()) {
         create_pin(ep, index, nets_table, wires_table);
@@ -97,6 +101,7 @@ bool gate::create(const evl_component &c, const std::map<std::string, net *> &ne
 bool gate::create_pin(const evl_pin &ep, size_t index, const std::map<std::string, net *> &nets_table, const evl_wires_table &wires_table) {
     // resolve semantics of ep using wires_table
     pin *p = new pin;
+    p->calculate_width(ep);
     pins_.push_back(p);
     return p->create(this, index, ep, nets_table);
 }
@@ -136,12 +141,62 @@ bool gate::validate_structural_semantics() {
         for (size_t i = 1; i < pins_.size(); ++i)
             pins_[i]->set_as_input();
     }
+    else if (type_ == "or") {
+        if (pins_.size() < 3) return false;
+        pins_[0]->set_as_output(); // out
+        for (size_t i = 1; i < pins_.size(); ++i)
+            pins_[i]->set_as_input();
+    }
+    else if (type_ == "xor") {
+        if (pins_.size() < 3) return false;
+        pins_[0]->set_as_output(); // out
+        for (size_t i = 1; i < pins_.size(); ++i)
+            pins_[i]->set_as_input(); 
+    }
+    else if (type_ == "not") {
+        if (pins_.size() != 2) return false;
+        pins_[0]->set_as_output();
+        pins_[1]->set_as_input();
+    }
+    else if (type_ == "buf") {
+        if (pins_.size() != 2) return false;
+        pins_[0]->set_as_output();
+        pins_[1]->set_as_input();
+    }
+    else if (type_ == "tris") {
+        if (pins_.size() != 2) return false;
+        pins_[0]->set_as_output();
+        pins_[1]->set_as_input();
+    }
+    else if (type_ == "evl_clock") {
+        if (pins_.size() != 1) return false;
+        pins_[0]->set_as_output();
+    }
     else if (type_ == "evl_dff") {
         if (pins_.size() != 3) return false;
         pins_[0]->set_as_output(); // q
         pins_[1]->set_as_input(); // d
         pins_[2]->set_as_input(); // clk
     }
-    //...//
+    else if (type_ == "evl_one") {
+        if (pins_.size() < 1) return false;
+        for (size_t i = 0; i < pins_.size(); ++i)
+            pins_[i]->set_as_output();  
+    }
+    else if (type_ == "evl_zero") {
+        if (pins_.size() < 1) return false;
+        for (size_t i = 0; i < pins_.size(); ++i)
+            pins_[i]->set_as_output();
+    }
+    else if (type_ == "evl_input") {
+        if (pins_.size() < 1) return false;
+        for (size_t i = 0; i < pins_.size(); ++i)
+            pins_[i]->set_as_output();
+    }
+    else if (type_ == "evl_output") {
+        if (pins_.size() < 1) return false;
+        for (size_t i = 0; i < pins_.size(); ++i)
+            pins_[i]->set_as_input(); 
+    }
     return true;
 }

@@ -145,14 +145,33 @@ bool netlist::save(std::string nl_fl, std::string mod_name) {
         return false;
     }
     output_file << "module " << mod_name << std::endl;
-    std::vector<net *> net_ptr_vec{std::begin(nets_), std::end(nets_)};
-    std::vector<gate *> gate_ptr_vec{std::begin(gates_), std::end(gates_)};
-    output_file << "nets " << net_ptr_vec.size() << std::endl;
-    for (auto n : net_ptr_vec) {
-        output_file << "net " << n->get_name_() << " " << n->get_connections_().size() << std::endl;
+//    std::vector<net *> net_ptr_vec{std::begin(nets_), std::end(nets_)};
+//    std::vector<gate *> gate_ptr_vec{std::begin(gates_), std::end(gates_)};
+    output_file << "nets " << nets_.size() << std::endl;
+    for (auto n : nets_) {
+        output_file << "  " << "net " << n->get_name_() << " " << n->get_connections_().size() << std::endl;
         std::vector<pin *> pin_ptr_vec{std::begin(n->get_connections_ref()), std::end(n->get_connections_ref())};
-        for (int i = 0; i < n->get_connections_().size(); ++i) {
-            output_file << gate_ptr_vec[i]->get_type_() << "[" << gate_ptr_vec[i]->get_name_() << "] " << i << std::endl;
+        for (auto g : gates_) {
+            int j = 0;
+            for (int i = 0; i < n->get_connections_().size(); ++i) {
+                if (g == pin_ptr_vec[i]->get_gate_ptr()) {
+                    output_file << "    " << g->get_type_();
+                    if (g->get_name_() != "") 
+                        output_file << g->get_name_();
+                    output_file << " " << j << std::endl;
+                    ++j;
+                }
+            }
+        }
+    }
+    output_file << "components " << gates_.size() << std::endl;
+    for (auto g : gates_) {
+        output_file << "  " << "component " << g->get_type_();
+        if (g->get_name_() != "")
+            output_file << g->get_name_();
+        output_file << " " << g->get_pins_().size() << std::endl;
+        for (auto p : g->get_pins_()) {
+            output_file << "    " << "pin " << p->get_width_() << std::endl;    
         }
     }
     return true;

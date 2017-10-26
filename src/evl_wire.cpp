@@ -224,7 +224,7 @@ void evl_wire::display_wires_vector(std::ostream &out, const evl_wires &wires_ve
             << " " << it->second << std::endl;
     }*/
     for (auto &kv: wires_vector) {
-        out << "wire " << kv.get_name()
+        out << "  " << "wire " << kv.get_name()
             << " " << kv.get_width() << std::endl;
     }
 }

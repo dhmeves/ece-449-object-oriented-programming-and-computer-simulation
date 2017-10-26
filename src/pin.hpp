@@ -12,6 +12,8 @@ class pin {
 
     net *net_; // relationship "connect"
 
+    int width_;
+
 public:
 
 // Constructors
@@ -20,13 +22,13 @@ public:
 
     pin(gate *g, size_t i);
 
-    pin(char d, gate *g, size_t i, net *n);
+    pin(char d, gate *g, size_t i, net *n, int w);
 
 // Destructors
 
 // Setters
 
-    bool set(char d, gate *g, size_t i, net *n);
+    bool set(char d, gate *g, size_t i, net *n, int w);
 
     bool set_dir_(char d);
 
@@ -35,6 +37,8 @@ public:
     bool set_index_(size_t i);
 
     bool set_net_ptr(net *n);
+
+    bool set_width_(int w);
 
     bool set_as_input();
 
@@ -54,7 +58,11 @@ public:
 
     net * get_net_ptr();
 
+    int get_width_() const;
+
 // Other Methods
+
+    bool calculate_width(const evl_pin &p);
 
     bool create(gate *g, size_t index, const evl_pin &p, const std::map<std::string, net *> &nets_table);
 

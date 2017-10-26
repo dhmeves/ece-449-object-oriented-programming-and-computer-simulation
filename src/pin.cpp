@@ -29,18 +29,19 @@
 
     pin::pin(gate *g, size_t i) : gate_(g), index_(i) {}
 
-    pin::pin(char d, gate *g, size_t i, net *n) : dir_(d), gate_(g), index_(i), net_(n) {}
+    pin::pin(char d, gate *g, size_t i, net *n, int w) : dir_(d), gate_(g), index_(i), net_(n), width_(w) {}
 
 // Destructors
 
 // Setters
 
-    bool pin::set(char d, gate *g, size_t i, net *n) {
+    bool pin::set(char d, gate *g, size_t i, net *n, int w) {
         //...// return false if pin is invalid
         dir_ = d;
         gate_ = g;
         index_ = i;
         net_ = n;
+        width_ = w;
         return true;
     }
 
@@ -65,6 +66,12 @@
     bool pin::set_net_ptr(net *n) {
         //...// return false if net is invalid
         net_ = n;
+        return true;
+    }
+
+    bool pin::set_width_(int w) {
+        //.../ return false if width is invalid
+        width_ = w;
         return true;
     }
 
@@ -104,10 +111,29 @@
         return net_;
     }
 
+    int pin::get_width_() const {
+        return width_;
+    }
+
 // Other Methods
+
+bool pin::calculate_width(const evl_pin &p) {
+    width_ = 0;
+    int msb = p.get_bus_msb();
+    int lsb = p.get_bus_lsb();
+    if ((msb == -1) && (lsb == -1)) 
+        width_ = 1;
+    else if ((msb != -1) && (lsb == -1)) 
+        width_ = msb + 1;
+    else if ((msb != -1) && (lsb != -1))
+        width_ = msb - lsb + 1;
+    return true;
+}
+
 bool pin::create(gate *g, size_t index, const evl_pin &p, const std::map<std::string, net *> &nets_table) {
     // store g and index;
     pin *pn = new pin(g, index);
+    pn->calculate_width(p);
     if (p.get_bus_msb() == -1) { // a 1-bit wire
         auto net_name = p.get_name();
         auto net_ = nets_table.find(net_name);

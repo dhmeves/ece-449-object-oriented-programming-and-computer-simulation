@@ -16,6 +16,8 @@ public:
 
     gate();
 
+    gate(std::string n, std::string t);
+
     gate(std::string n, std::string t, std::vector<pin *> p);
 
 // Destructors
