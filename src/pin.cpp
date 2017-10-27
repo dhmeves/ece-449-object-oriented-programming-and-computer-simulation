@@ -155,7 +155,7 @@ bool pin::create(gate *g, size_t index, const evl_pin &p, const std::map<std::st
     }
     else {  // a bus
         // ... //
-        if ((p.get_bus_msb() == -1) && (p.get_bus_lsb() == -1)) {
+/*        if ((p.get_bus_msb() == -1) && (p.get_bus_lsb() == -1)) {
             auto bus_name = p.get_name();
             auto bus_ = nets_table.find(bus_name);
             if (bus_ != nets_table.end()) {
@@ -195,7 +195,7 @@ bool pin::create(gate *g, size_t index, const evl_pin &p, const std::map<std::st
         }
         else {
             return false;
-        }
+       }*/
     }
     return true;
 }
