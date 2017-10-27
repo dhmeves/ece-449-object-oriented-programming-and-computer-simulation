@@ -10,6 +10,8 @@ class pin {
 
     size_t index_; // attribute of "contain"
 
+//    std::list<net *> nets_; // relationship "connect"
+    
     net *net_; // relationship "connect"
 
     int width_;
@@ -35,6 +37,8 @@ public:
     bool set_gate_ptr(gate *g);
 
     bool set_index_(size_t i);
+    
+//    bool set_nets_(std::list<net *> n);
 
     bool set_net_ptr(net *n);
 
@@ -54,6 +58,10 @@ public:
 
     size_t get_index_() const;
 
+//    std::list<net *> get_const_net_ptr() const;
+
+//    std::list<net *> get_net_ptr();
+
     net * get_const_net_ptr() const;
 
     net * get_net_ptr();
@@ -62,7 +70,7 @@ public:
 
 // Other Methods
 
-    bool calculate_width(const evl_pin &p);
+//    bool calculate_width(const evl_pin &p);
 
     bool create(gate *g, size_t index, const evl_pin &p, const std::map<std::string, net *> &nets_table);
 

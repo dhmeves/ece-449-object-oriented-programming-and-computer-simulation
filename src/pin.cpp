@@ -63,6 +63,12 @@
         return true;
     }
 
+/*    bool pin::set_nets_(std::list<net *> n) {
+        //...// return false if net is invalid
+        nets_ = n;
+        return true;
+    }*/
+
     bool pin::set_net_ptr(net *n) {
         //...// return false if net is invalid
         net_ = n;
@@ -103,6 +109,14 @@
         return index_;
     }
 
+/*    std::list<net *> pin::get_const_net_ptr() const {
+        return nets_;
+    }
+
+    std::list<net *> pin::get_net_ptr() {
+        return nets_;
+    } */
+
     net * pin::get_const_net_ptr() const {
         return net_;
     }
@@ -117,7 +131,7 @@
 
 // Other Methods
 
-bool pin::calculate_width(const evl_pin &p) {
+/*bool pin::calculate_width(const evl_pin &p) {
     width_ = 0;
     int msb = p.get_bus_msb();
     int lsb = p.get_bus_lsb();
@@ -128,25 +142,60 @@ bool pin::calculate_width(const evl_pin &p) {
     else if ((msb != -1) && (lsb != -1))
         width_ = msb - lsb + 1;
     return true;
-}
+}*/
 
 bool pin::create(gate *g, size_t index, const evl_pin &p, const std::map<std::string, net *> &nets_table) {
     // store g and index;
-    pin *pn = new pin(g, index);
-    pn->calculate_width(p);
+    gate_ = g;
+    index_ = index;
     if (p.get_bus_msb() == -1) { // a 1-bit wire
-        auto net_name = p.get_name();
-        auto net_ = nets_table.find(net_name);
-        if (net_ != nets_table.end()) {
-            net_->second->append_pin(pn);
+        std::string net_name = p.get_name();
+        net_ = nets_table.find(net_name)->second;
+        net_->append_pin(this);
+    }
+    else {  // a bus
+        // ... //
+        if ((p.get_bus_msb() == -1) && (p.get_bus_lsb() == -1)) {
+            auto bus_name = p.get_name();
+            auto bus_ = nets_table.find(bus_name);
+            if (bus_ != nets_table.end()) {
+                bus_->second->append_pin(this);
+            }
+            else {
+                std::cerr << "BUS not found in nets table" << std::endl;
+                return false;
+            }
+        }
+        else if ((p.get_bus_msb() != -1) && (p.get_bus_lsb() != -1)) {
+            assert(p.get_bus_lsb() >= 0);
+            assert(p.get_bus_msb() >= p.get_bus_lsb());
+            assert(width_ >= p.get_bus_msb());
+            auto both_name = p.get_name(); 
+            auto both_ = nets_table.find(both_name);
+            if (both_ != nets_table.end()) {
+                both_->second->append_pin(this);
+            }
+            else {
+                std::cerr << "BOTH not found in nets table" << std::endl;
+                return false;
+            }
+        }
+        else if ((p.get_bus_msb() != -1) && (p.get_bus_lsb() == -1)) {
+            assert(p.get_bus_msb() >= 0);
+            assert(width_ >= p.get_bus_msb());
+            auto bit_name = p.get_name();
+            auto bit_ = nets_table.find(bit_name);
+            if (bit_ != nets_table.end()) {
+                bit_->second->append_pin(this);
+            }
+            else {
+                std::cerr << "BIT not found in nets table" << std::endl;
+                return false;
+            }
         }
         else {
-            std::cerr << "Pin not found in nets table" << std::endl;
             return false;
         }
-    }
-    else { // a bus
-       // ... //
     }
     return true;
 }
