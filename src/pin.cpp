@@ -197,9 +197,9 @@ bool pin::create(gate *g, size_t index, const evl_pin &p, const std::map<std::st
             }
         }
         else if ((p.get_bus_msb() != -1) && (p.get_bus_lsb() != -1)) {
-            assert(p.get_bus_lsb() >= 0);
-            assert(p.get_bus_msb() >= p.get_bus_lsb());
-            assert(width_ >= p.get_bus_msb());
+//            assert(p.get_bus_lsb() >= 0);
+//            assert(p.get_bus_msb() >= p.get_bus_lsb());
+//            assert(width_ >= p.get_bus_msb());
             for (int j = p.get_bus_lsb(); j < p.get_bus_msb(); ++j) {
                 std::ostringstream oss2;
                 oss2 << p.get_name() << "[" << j << "]"; 
@@ -216,8 +216,8 @@ bool pin::create(gate *g, size_t index, const evl_pin &p, const std::map<std::st
             }
         }
         else if ((p.get_bus_msb() != -1) && (p.get_bus_lsb() == -1)) {
-            assert(p.get_bus_msb() >= 0);
-            assert(width_ >= p.get_bus_msb());
+ //           assert(p.get_bus_msb() >= 0);
+ //           assert(width_ >= p.get_bus_msb());
             std::ostringstream oss3;
             oss3 << p.get_name() << "[" << p.get_bus_msb() << "]"; 
             auto bit_name = oss3.str();

@@ -95,8 +95,8 @@ bool gate::create(const evl_component &c, const std::map<std::string, net *> &ne
         create_pin(ep, index, nets_table, wires_table);
         ++index;
     }
-//    return true;
-    return validate_structural_semantics();
+    return true;
+//    return validate_structural_semantics();
 }
 
 bool gate::create_pin(const evl_pin &ep, size_t index, const std::map<std::string, net *> &nets_table, const evl_wires_table &wires_table) {
