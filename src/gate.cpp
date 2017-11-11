@@ -95,16 +95,17 @@ bool gate::create(const evl_component &c, const std::map<std::string, net *> &ne
         create_pin(ep, index, nets_table, wires_table);
         ++index;
     }
+//    return true;
     return validate_structural_semantics();
 }
 
 bool gate::create_pin(const evl_pin &ep, size_t index, const std::map<std::string, net *> &nets_table, const evl_wires_table &wires_table) {
     // resolve semantics of ep using wires_table
     pin *p = new pin;
-//    auto w = wires_table.find(ep.get_name());
-//    p->set_width_(w->second);
+    auto wire = wires_table.find(ep.get_name());
+    int width = wire->second;
     pins_.push_back(p);
-    return p->create(this, index, ep, nets_table);
+    return p->create(this, index, ep, nets_table, width);
 }
 
 // project 4

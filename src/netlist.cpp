@@ -152,14 +152,12 @@ bool netlist::save(std::string nl_fl, std::string mod_name) {
         output_file << "  " << "net " << n->get_name_() << " " << n->get_connections_().size() << std::endl;
         std::vector<pin *> pin_ptr_vec{std::begin(n->get_connections_ref()), std::end(n->get_connections_ref())};
         for (auto g : gates_) {
-            int j = 0;
             for (int i = 0; i < n->get_connections_().size(); ++i) {
                 if (g == pin_ptr_vec[i]->get_gate_ptr()) {
                     output_file << "    " << g->get_type_();
                     if (g->get_name_() != "") 
                         output_file << g->get_name_();
-                    output_file << " " << j << std::endl;
-                    ++j;
+                    output_file << " " << pin_ptr_vec[i]->get_index_() << std::endl;
                 }
             }
         }

@@ -70,9 +70,9 @@ public:
 
 // Other Methods
 
-    bool calculate_width(const evl_pin &p);
+    bool calculate_width(const evl_pin &p, int width);
 
-    bool create(gate *g, size_t index, const evl_pin &p, const std::map<std::string, net *> &nets_table);
+    bool create(gate *g, size_t index, const evl_pin &p, const std::map<std::string, net *> &nets_table, int width);
 
     char compute_signal();
 
