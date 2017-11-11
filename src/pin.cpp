@@ -29,18 +29,18 @@
 
     pin::pin(gate *g, size_t i) : gate_(g), index_(i) {}
 
-    pin::pin(char d, gate *g, size_t i, net *n, int w) : dir_(d), gate_(g), index_(i), net_(n), width_(w) {}
+    pin::pin(char d, gate *g, size_t i, std::vector<net *> n, int w) : dir_(d), gate_(g), index_(i), nets_(n), width_(w) {}
 
 // Destructors
 
 // Setters
 
-    bool pin::set(char d, gate *g, size_t i, net *n, int w) {
+    bool pin::set(char d, gate *g, size_t i, std::vector<net *> n, int w) {
         //...// return false if pin is invalid
         dir_ = d;
         gate_ = g;
         index_ = i;
-        net_ = n;
+        nets_ = n;
         width_ = w;
         return true;
     }
@@ -63,17 +63,17 @@
         return true;
     }
 
-/*    bool pin::set_nets_(std::list<net *> n) {
+    bool pin::set_nets_(std::vector<net *> n) {
         //...// return false if net is invalid
         nets_ = n;
         return true;
-    }*/
+    }
 
-    bool pin::set_net_ptr(net *n) {
+/*    bool pin::set_net_ptr(net *n) {
         //...// return false if net is invalid
         net_ = n;
         return true;
-    }
+    }*/
 
     bool pin::set_width_(int w) {
         //.../ return false if width is invalid
@@ -109,21 +109,21 @@
         return index_;
     }
 
-/*    std::list<net *> pin::get_const_net_ptr() const {
+    std::vector<net *> pin::get_const_net_ptr() const {
         return nets_;
     }
 
-    std::list<net *> pin::get_net_ptr() {
+    std::vector<net *> pin::get_net_ptr() {
         return nets_;
-    } */
+    }
 
-    net * pin::get_const_net_ptr() const {
+/*    net * pin::get_const_net_ptr() const {
         return net_;
     }
 
     net * pin::get_net_ptr() {
         return net_;
-    }
+    }*/
 
     int pin::get_width_() const {
         return width_;
@@ -131,7 +131,7 @@
 
 // Other Methods
 
-/*bool pin::calculate_width(const evl_pin &p) {
+bool pin::calculate_width(const evl_pin &p) {
     width_ = 0;
     int msb = p.get_bus_msb();
     int lsb = p.get_bus_lsb();
@@ -142,16 +142,21 @@
     else if ((msb != -1) && (lsb != -1))
         width_ = msb - lsb + 1;
     return true;
-}*/
+}
 
 bool pin::create(gate *g, size_t index, const evl_pin &p, const std::map<std::string, net *> &nets_table) {
     // store g and index;
     gate_ = g;
     index_ = index;
+    calculate_width(p);
     if (p.get_bus_msb() == -1) { // a 1-bit wire
         std::string net_name = p.get_name();
-        net_ = nets_table.find(net_name)->second;
-        net_->append_pin(this);
+        auto n = nets_table.find(net_name);
+        if (n == nets_table.end()) {
+            return -1;
+        } 
+        n->second->append_pin(this);
+        nets_.push_back(n->second);
     }
     else {  // a bus
         // ... //

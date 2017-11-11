@@ -171,7 +171,11 @@ bool netlist::save(std::string nl_fl, std::string mod_name) {
             output_file << g->get_name_();
         output_file << " " << g->get_pins_().size() << std::endl;
         for (auto p : g->get_pins_()) {
-            output_file << "    " << "pin " << p->get_width_() << std::endl;    
+            output_file << "    " << "pin " << p->get_width_();
+            for (int k = 0; k < p->get_net_ptr().size() ; ++k) {
+                output_file << " " << p->get_net_ptr()[k]->get_name_();  
+            }  
+            output_file << std::endl;
         }
     }
     return true;

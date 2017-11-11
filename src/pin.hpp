@@ -10,9 +10,9 @@ class pin {
 
     size_t index_; // attribute of "contain"
 
-//    std::list<net *> nets_; // relationship "connect"
+    std::vector<net *> nets_; // relationship "connect"
     
-    net *net_; // relationship "connect"
+//    net *net_; // relationship "connect"
 
     int width_;
 
@@ -24,13 +24,13 @@ public:
 
     pin(gate *g, size_t i);
 
-    pin(char d, gate *g, size_t i, net *n, int w);
+    pin(char d, gate *g, size_t i, std::vector<net *> n, int w);
 
 // Destructors
 
 // Setters
 
-    bool set(char d, gate *g, size_t i, net *n, int w);
+    bool set(char d, gate *g, size_t i, std::vector<net *> n, int w);
 
     bool set_dir_(char d);
 
@@ -38,9 +38,9 @@ public:
 
     bool set_index_(size_t i);
     
-//    bool set_nets_(std::list<net *> n);
+    bool set_nets_(std::vector<net *> n);
 
-    bool set_net_ptr(net *n);
+//    bool set_net_ptr(net *n);
 
     bool set_width_(int w);
 
@@ -58,19 +58,19 @@ public:
 
     size_t get_index_() const;
 
-//    std::list<net *> get_const_net_ptr() const;
+    std::vector<net *> get_const_net_ptr() const;
 
-//    std::list<net *> get_net_ptr();
+    std::vector<net *> get_net_ptr();
 
-    net * get_const_net_ptr() const;
+//    net * get_const_net_ptr() const;
 
-    net * get_net_ptr();
+//    net * get_net_ptr();
 
     int get_width_() const;
 
 // Other Methods
 
-//    bool calculate_width(const evl_pin &p);
+    bool calculate_width(const evl_pin &p);
 
     bool create(gate *g, size_t index, const evl_pin &p, const std::map<std::string, net *> &nets_table);
 
