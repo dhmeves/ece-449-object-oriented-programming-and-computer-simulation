@@ -190,7 +190,7 @@ bool pin::create(gate *g, size_t index, const evl_pin &p, const std::map<std::st
                         nets_.push_back(bus_->second);
                     }
                     else {
-                        std::cout << "BOTH not found in nets table" << std::endl;
+                        std::cout << "BUS not found in nets table" << std::endl;
                         return false;
                     }
                 }
@@ -200,7 +200,7 @@ bool pin::create(gate *g, size_t index, const evl_pin &p, const std::map<std::st
 //            assert(p.get_bus_lsb() >= 0);
 //            assert(p.get_bus_msb() >= p.get_bus_lsb());
 //            assert(width_ >= p.get_bus_msb());
-            for (int j = p.get_bus_lsb(); j < p.get_bus_msb(); ++j) {
+            for (int j = p.get_bus_lsb(); j <= p.get_bus_msb(); ++j) {
                 std::ostringstream oss2;
                 oss2 << p.get_name() << "[" << j << "]"; 
                 auto both_name = oss2.str();
@@ -227,7 +227,7 @@ bool pin::create(gate *g, size_t index, const evl_pin &p, const std::map<std::st
                 nets_.push_back(bit_->second);
             }
             else {
-                std::cerr << "BOTH not found in nets table" << std::endl;
+                std::cerr << "BIT not found in nets table" << std::endl;
                 return false;
             }
         }
