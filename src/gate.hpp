@@ -8,6 +8,8 @@ class gate {
 
     std::string type_; // e.g. "and", "or"
 
+protected:
+
     std::vector<pin *> pins_; // relationship "contain"
 
 public:
@@ -50,7 +52,7 @@ public:
 
     bool create_pin(const evl_pin &ep, size_t index, const std::map<std::string, net *> &nets_table, const evl_wires_table &wires_table);
 
-    void compute_next_state_or_output();
+    void compute_next_state_or_output(int time, std::string file_name);
 
     char compute_signal(int pin_index); 
 

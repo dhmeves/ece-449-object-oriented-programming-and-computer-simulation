@@ -10,6 +10,7 @@
 #include <iterator>
 #include <map>
 #include <unordered_map>
+#include <sstream>
 
 #include "lex.hpp"
 #include "evl_token.hpp"
@@ -95,8 +96,8 @@ bool gate::create(const evl_component &c, const std::map<std::string, net *> &ne
         create_pin(ep, index, nets_table, wires_table);
         ++index;
     }
-    return true;
-//    return validate_structural_semantics();
+//    return true;
+    return validate_structural_semantics();
 }
 
 bool gate::create_pin(const evl_pin &ep, size_t index, const std::map<std::string, net *> &nets_table, const evl_wires_table &wires_table) {
@@ -109,20 +110,33 @@ bool gate::create_pin(const evl_pin &ep, size_t index, const std::map<std::strin
 }
 
 // project 4
-/*
-void gate::compute_next_state_or_output() {
+
+void gate::compute_next_state_or_output(int time, std::string file_name) {
     if (type_ == "evl_dff") {
         auto next_state_ = pins_[1]->compute_signal(); // d
     }
     else if (type_ == "evl_output") {
         //collect signal from all pins and write to file
+        std::ostringstream file_out((file_name+"."+name_+".evl_output").c_str());
+        file_out << pins_.size() << std::endl;
+        for (auto p : pins_) {
+            file_out << p->get_width_() << std::endl;
+        }
+        for (int i = 0; i < time; ++i) {
+            for (auto pin : pins_) {
+                for (auto n : pin->get_net_ptr()) {
+                    file_out << n->get_signal_() << " ";
+                }
+            }
+            file_out << std::endl;
+        }
     }
 }
 
 char gate::compute_signal(int pin_index) {
     if (type_ == "evl_dff") {
         assert(pin_index == 0); // must be q
-        return state_;
+//        return state_;
     }
     else if (type_ == "evl_zero") {
         return '0';
@@ -131,10 +145,81 @@ char gate::compute_signal(int pin_index) {
         assert(pin_index == 0); // must be out
 //        collect signals from the input pins
 //        compute and return the output signal
+        for (auto p : pins_) {
+            if (p->get_dir_() == 'I') {
+                for (auto n : p->get_net_ptr()) {
+                    if (n->get_signal_() == '0') {
+                        return '0';
+                    }
+                }
+            }
+        }
+        return '1';    
     }
     //...//
+    else if (type_ == "or") {
+        for (auto p : pins_) {
+            if (p->get_dir_() == 'I') {
+                for (auto n: p->get_net_ptr()) {
+                    if (n->get_signal_() == '1') {
+                        return '1';
+                    }
+                }
+            }
+        }
+        return '0'; 
+    }
+    else if (type_ == "xor") {
+        int flag = 0;
+        for (auto p : pins_) {
+            if (p->get_dir_() == 'I') {
+                for (auto n : p->get_net_ptr()) {
+                    if (n->get_signal_() == '1') {
+                        flag++;
+                    }   
+                    else 
+                        continue;
+                }
+            }
+        }
+        if ((flag % 2) == 0) {
+            return '1';
+        }
+        else
+            return '0';
+    }
+    else if (type_ == "not") {
+        for (auto p : pins_) {
+            if (p->get_dir_() == 'I') {
+                for (auto n : p->get_net_ptr()) {
+                    if (n->get_signal_() == '1') {
+                        return '0';
+                    }   
+                    else if (n->get_signal_() == '0') {
+                        return '1';
+                    }
+                }
+            }
+        }
+    }
+    else if (type_ == "buf") {
+        for (auto p : pins_) {
+            if (p->get_dir_() == 'I') {
+                for (auto n : p->get_net_ptr()) {
+                    if (n->get_signal_() == '1') {
+                        return '1';
+                    }   
+                    else if (n->get_signal_() == '0') {
+                        return '0';
+                    }
+                }
+            }
+        }
+    }
+    else if (type_ == "evl_one") {
+        return '1';
+    }
 }
-*/
 
 bool gate::validate_structural_semantics() {
     if (type_ == "and") {

@@ -105,7 +105,8 @@ int main(int argc, char *argv[]) {
     std::string nl_file = std::string(argv[1])+".netlist";
     nl.save(nl_file, module_name); // save the netlist for Project 3
 
-//    nl.simulate(1000); // simulate 1000 cycles for Project 4
+    std::string nl_sim = std::string(argv[1]);
+    nl.simulate(1000, nl_sim); // simulate 1000 cycles for Project 4
 
     return 0;
 }

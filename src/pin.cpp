@@ -238,11 +238,13 @@ bool pin::create(gate *g, size_t index, const evl_pin &p, const std::map<std::st
 }
 
 // project 4
-/*
+
 char pin::compute_signal() {
     if (dir_ == '0')
         return gate_->compute_signal(index_);
-    else // dir_ == ’I’
-        return net_->get_signal_();
+    else { // dir_ == ’I’
+        for (auto n : nets_) {
+            return n->get_signal();   
+        }
+    }
 }
-*/

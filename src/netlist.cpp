@@ -180,11 +180,14 @@ bool netlist::save(std::string nl_fl, std::string mod_name) {
 }
 
 // project 4
-/*
-void netlist::compute_next_state_and_output() {
+
+void netlist::compute_next_state_and_output(int time, std::string file_name) {
     for (net *n: nets_)
         n->set_signal_('?');
     for (gate *g: gates_)
-        g->compute_next_state_or_output();
+        g->compute_next_state_or_output(time, file_name);
 }
-*/
+
+void netlist::simulate(int time, std::string file_name) {
+    compute_next_state_and_output(time, file_name);
+}

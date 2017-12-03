@@ -10,6 +10,7 @@
 #include <iterator>
 #include <map>
 #include <unordered_map>
+#include <exception>
 
 #include "lex.hpp"
 #include "evl_token.hpp"
@@ -87,17 +88,13 @@ void net::append_pin(pin *p) {
 
 // project 4?
 
-/*
-
 char net::get_signal() {
     if (signal_ == '?') {
-        auto it = std::find_if(connections_.begin(), connections_.end(),
-            [](pin *p) {p->get_dir_() == '0';});
+        auto it = std::find_if(connections_.begin(), connections_.end(), [](pin *p) {return p->get_dir_() == '0';});
         if (it == connections_.end())
-            throw std::runtime_exception("floating net");
+            throw std::runtime_error("floating net");
         pin *driver = *it;
         signal_ = driver->compute_signal();
     }
     return signal_;
 }
-*/

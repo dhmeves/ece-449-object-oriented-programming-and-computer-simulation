@@ -26,6 +26,8 @@ class net;
 
 class pin;
 
+class flip_flop;
+
 // Type Definitions
 
 typedef std::list<evl_token> evl_tokens;
