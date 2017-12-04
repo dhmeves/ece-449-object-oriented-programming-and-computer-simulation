@@ -107,7 +107,7 @@ bool evl_component::process_component_statement(evl_statement &s) {
                 continue;
             }
             else if (t.get_token_type() == evl_token::NAME) {
-                s.get_evl_component_ref().set_name(" "+t.get_string());
+                s.get_evl_component_ref().set_name(t.get_string());
                 state = NAME;
                 continue;
             }

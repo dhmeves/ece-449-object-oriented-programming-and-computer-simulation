@@ -242,9 +242,11 @@ void evl_statement::display_statements(std::ostream &out, std::vector<evl_statem
     out << "components " << component_count << std::endl;
     for (size_t j = 0; j < statements.size(); ++j) {
         if (statements[j].get_statement_type() == evl_statement::COMPONENT) {
-            out << "  " << "component " << statements[j].get_evl_component_ref().get_type() 
-                << statements[j].get_evl_component_ref().get_name() << " " 
-                << statements[j].get_evl_component_ref().get_pin_vector_ref().size() << std::endl;
+            out << "  " << "component " << statements[j].get_evl_component_ref().get_type() << " "; 
+                if (statements[j].get_evl_component_ref().get_name() != "") {
+                    out << statements[j].get_evl_component_ref().get_name() << " ";
+                } 
+                out << statements[j].get_evl_component_ref().get_pin_vector_ref().size() << std::endl;
             for (size_t k = 0; k < statements[j].get_evl_component_ref().get_pin_vector_ref().size(); ++k) {
                 if ((statements[j].get_evl_component_ref().get_pin_vector_ref()[k].get_bus_msb() != -1) &&
                     (statements[j].get_evl_component_ref().get_pin_vector_ref()[k].get_bus_lsb() != -1)) {

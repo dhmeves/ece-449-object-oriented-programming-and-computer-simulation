@@ -117,7 +117,7 @@ void gate::compute_next_state_or_output(int time, std::string file_name) {
     }
     else if (type_ == "evl_output") {
         //collect signal from all pins and write to file
-        std::ostringstream file_out((file_name+"."+name_+".evl_output").c_str());
+        std::ofstream file_out((file_name+"."+name_+".evl_output").c_str());
         file_out << pins_.size() << std::endl;
         for (auto p : pins_) {
             file_out << p->get_width_() << std::endl;
@@ -125,7 +125,7 @@ void gate::compute_next_state_or_output(int time, std::string file_name) {
         for (int i = 0; i < time; ++i) {
             for (auto pin : pins_) {
                 for (auto n : pin->get_net_ptr()) {
-                    file_out << n->get_signal_() << " ";
+                    file_out << n->get_signal() << " ";
                 }
             }
             file_out << std::endl;

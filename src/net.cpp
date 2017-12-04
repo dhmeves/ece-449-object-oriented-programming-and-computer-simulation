@@ -90,7 +90,7 @@ void net::append_pin(pin *p) {
 
 char net::get_signal() {
     if (signal_ == '?') {
-        auto it = std::find_if(connections_.begin(), connections_.end(), [](pin *p) {return p->get_dir_() == '0';});
+        auto it = std::find_if(connections_.begin(), connections_.end(), [](pin *p) {return p->get_dir_() == 'O';});
         if (it == connections_.end())
             throw std::runtime_error("floating net");
         pin *driver = *it;
