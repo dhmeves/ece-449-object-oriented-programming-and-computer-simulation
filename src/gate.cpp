@@ -148,11 +148,15 @@ char gate::compute_signal(int pin_index) {
         for (auto p : pins_) {
             if (p->get_dir_() == 'I') {
                 for (auto n : p->get_net_ptr()) {
-                    if (n->get_signal_() == '0') {
+                    if (n->get_signal() == '0') {
                         return '0';
                     }
+                    else
+                        continue;
                 }
             }
+            else
+                continue;
         }
         return '1';    
     }
@@ -161,9 +165,11 @@ char gate::compute_signal(int pin_index) {
         for (auto p : pins_) {
             if (p->get_dir_() == 'I') {
                 for (auto n: p->get_net_ptr()) {
-                    if (n->get_signal_() == '1') {
+                    if (n->get_signal() == '1') {
                         return '1';
                     }
+                    else
+                        continue;
                 }
             }
         }
@@ -174,7 +180,7 @@ char gate::compute_signal(int pin_index) {
         for (auto p : pins_) {
             if (p->get_dir_() == 'I') {
                 for (auto n : p->get_net_ptr()) {
-                    if (n->get_signal_() == '1') {
+                    if (n->get_signal() == '1') {
                         flag++;
                     }   
                     else 
@@ -192,12 +198,14 @@ char gate::compute_signal(int pin_index) {
         for (auto p : pins_) {
             if (p->get_dir_() == 'I') {
                 for (auto n : p->get_net_ptr()) {
-                    if (n->get_signal_() == '1') {
+                    if (n->get_signal() == '1') {
                         return '0';
                     }   
-                    else if (n->get_signal_() == '0') {
+                    else if (n->get_signal() == '0') {
                         return '1';
                     }
+                    else
+                        continue;
                 }
             }
         }
@@ -206,12 +214,14 @@ char gate::compute_signal(int pin_index) {
         for (auto p : pins_) {
             if (p->get_dir_() == 'I') {
                 for (auto n : p->get_net_ptr()) {
-                    if (n->get_signal_() == '1') {
+                    if (n->get_signal() == '1') {
                         return '1';
                     }   
-                    else if (n->get_signal_() == '0') {
+                    else if (n->get_signal() == '0') {
                         return '0';
                     }
+                    else
+                        continue;
                 }
             }
         }
