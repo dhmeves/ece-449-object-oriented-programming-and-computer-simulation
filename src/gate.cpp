@@ -202,10 +202,10 @@ char gate::compute_signal(int pin_index) {
             }
         }
         if ((flag % 2) == 0) {
-            return '1';
+            return '0';
         }
         else
-            return '0';
+            return '1';
     }
     else if (type_ == "not") {
         for (auto p : pins_) {
