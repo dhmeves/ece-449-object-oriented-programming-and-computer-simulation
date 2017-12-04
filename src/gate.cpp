@@ -11,6 +11,7 @@
 #include <map>
 #include <unordered_map>
 #include <sstream>
+#include <iomanip>
 
 #include "lex.hpp"
 #include "evl_token.hpp"
@@ -124,9 +125,21 @@ void gate::compute_next_state_or_output(int time, std::string file_name) {
         }
         for (int i = 0; i < time; ++i) {
             for (auto pin : pins_) {
+                std::string temp;
                 for (auto n : pin->get_net_ptr()) {
-                    file_out << n->get_signal() << " ";
+                    temp = temp+n->get_signal();
                 }
+                int result = 0;
+                for (size_t count = 0; count < temp.length() ; ++count) {
+                    result *=2;
+                    result += temp[count]=='1'? 1 :0;
+                }  
+                int temp2 = pin->get_width_();  
+                int rounded_pin_width = temp2/4;
+                rounded_pin_width += temp2 % 4 ? 1 : 0;
+                std::stringstream ss;
+                ss << std::hex << std::setw(rounded_pin_width) << std::setfill('0')  << result;
+                file_out << ss.str() << " ";
             }
             file_out << std::endl;
         }
