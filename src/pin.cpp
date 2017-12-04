@@ -49,6 +49,7 @@
     bool pin::set_dir_(char d) {
         //...// return false if dir is invalid
         dir_ = d;
+        std::cout << "Setting pin direction " << d << std::endl;
         return true;
     }
 
@@ -240,11 +241,11 @@ bool pin::create(gate *g, size_t index, const evl_pin &p, const std::map<std::st
 // project 4
 
 char pin::compute_signal() {
-    if (dir_ == '0')
+    if (dir_ == 'O')
         return gate_->compute_signal(index_);
     else { // dir_ == ’I’
         for (auto n : nets_) {
-            return n->get_signal();   
+            return n->get_signal_();   
         }
     }
 }
