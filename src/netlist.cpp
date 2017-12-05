@@ -200,7 +200,6 @@ void netlist::simulate(int time, std::ofstream &file_out) {
         }
     }
     for (int i = 0; i < time; ++i) {
-        std::cout << "About to compute next state and output" << std::endl;
         compute_next_state_and_output(file_out);
         for (auto g : gates_) {
             g->update_state();

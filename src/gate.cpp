@@ -145,8 +145,9 @@ void gate::compute_next_state_or_output(std::ofstream &file_out) {
         for (auto pin : pins_) {
             std::string temp;
             for (auto n : pin->get_net_ptr()) {
-                temp = temp+n->get_signal();
+                temp = n->get_signal()+temp;
             }
+            std::cout << temp << std::endl;
             int result = 0;
             for (size_t count = 0; count < temp.length() ; ++count) {
                 result *=2;
@@ -157,6 +158,7 @@ void gate::compute_next_state_or_output(std::ofstream &file_out) {
             rounded_pin_width += temp2 % 4 ? 1 : 0;
             std::stringstream ss;
             ss << std::hex << std::setw(rounded_pin_width) << std::setfill('0')  << result;
+            std::cout << ss.str() << std::endl;
             file_out << ss.str() << " ";
         }
         file_out << std::endl;

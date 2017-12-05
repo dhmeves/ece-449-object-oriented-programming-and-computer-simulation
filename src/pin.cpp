@@ -246,6 +246,6 @@ char pin::compute_signal() {
     }
     else { // dir_ == ’I’
         auto net_ = nets_[0];
-        return net_->get_signal();   
+        return net_->get_signal(); 
     }
 }

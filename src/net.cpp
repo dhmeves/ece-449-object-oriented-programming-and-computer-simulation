@@ -98,3 +98,14 @@ char net::get_signal() {
     }
     return signal_;
 }
+
+bool net::check_if_output(){
+    for (pin *p : connections_){
+        if (p->get_dir_() == 'O'){
+            p->set_name_(name_);
+            p->set_net_(this);
+            return true;
+        }
+    }
+    return false; 
+}
