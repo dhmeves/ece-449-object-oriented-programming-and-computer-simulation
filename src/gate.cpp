@@ -157,7 +157,7 @@ void gate::compute_next_state_or_output(std::ofstream &file_out) {
             int rounded_pin_width = temp2/4;
             rounded_pin_width += temp2 % 4 ? 1 : 0;
             std::stringstream ss;
-            ss << std::hex << std::setw(rounded_pin_width) << std::setfill('0')  << result;
+            ss << std::hex << std::uppercase << std::setw(rounded_pin_width) << std::setfill('0')  << result;
             std::cout << ss.str() << std::endl;
             file_out << ss.str() << " ";
         }
