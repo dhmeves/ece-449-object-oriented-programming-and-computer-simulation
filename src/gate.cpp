@@ -117,6 +117,7 @@ bool gate::create(const evl_component &c, const std::map<std::string, net *> &ne
     type_ = c.get_type();
     size_t index = 0;
     state_ = '0';
+    next_state_ = '0';
     for (auto &ep : c.get_pin_vector()) {
         create_pin(ep, index, nets_table, wires_table);
         ++index;
