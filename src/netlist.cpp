@@ -186,7 +186,6 @@ void netlist::compute_next_state_and_output(std::ofstream &file_out) {
         n->set_signal_('?');
     for (gate *g: gates_) {
         g->compute_next_state_or_output(file_out);
-        g->update_state();
     }
 }
 
