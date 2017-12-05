@@ -242,13 +242,10 @@ bool pin::create(gate *g, size_t index, const evl_pin &p, const std::map<std::st
 
 char pin::compute_signal() {
     if (dir_ == 'O') {
-        std::cout << "Net signal " << std::endl;
         return gate_->compute_signal(index_);
     }
     else { // dir_ == ’I’
-        for (auto n : nets_) {
-            std::cout << "Net signal " << n->get_signal_() << std::endl;
-            return n->get_signal_();   
-        }
+        auto net_ = nets_[0];
+        return net_->get_signal();   
     }
 }
