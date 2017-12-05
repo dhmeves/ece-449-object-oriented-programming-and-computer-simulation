@@ -136,7 +136,7 @@ bool gate::create_pin(const evl_pin &ep, size_t index, const std::map<std::strin
 
 void gate::compute_next_state_or_output(int time, std::string file_name) {
     if (type_ == "evl_dff") {
-        auto next_state_ = pins_[1]->compute_signal(); // d
+        next_state_ = pins_[1]->compute_signal(); // d
     }
     else if (type_ == "evl_output") {
         //collect signal from all pins and write to file
