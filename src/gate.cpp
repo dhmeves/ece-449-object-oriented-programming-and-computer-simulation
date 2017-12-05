@@ -31,7 +31,7 @@ gate::gate() {}
 
 gate::gate(std::string n, std::string t) : name_(n), type_(t) {}
 
-gate::gate(std::string n, std::string t, std::vector<pin *> p) : name_(n), type_(t), pins_(p) {}
+gate::gate(std::string n, std::string t, std::vector<pin *> p, char s_, char ns_) : name_(n), type_(t), pins_(p), state_(s_), next_state_(ns_) {}
 
 // Destructors
 
@@ -42,11 +42,13 @@ gate::~gate() {
 
 // Setters
 
-bool gate::set(std::string n, std::string t, std::vector<pin *> p) {
+bool gate::set(std::string n, std::string t, std::vector<pin *> p, char s_, char ns_) {
     //,..// return false if gate is invalid
     name_ = n;
     type_ = t;
     pins_ = p;
+    state_ = s_;
+    next_state_ = ns_;
     return true;
 }
 
@@ -68,6 +70,18 @@ bool gate::set_pins_(std::vector<pin *> p) {
     return true;
 }
 
+bool gate::set_state_(char s_) {
+    //...// return false if state is invalid
+    state_ = s_;
+    return true;
+}
+
+bool gate::set_next_state_(char ns_) {
+    //...// return false if next state is invalid
+    next_state_ = ns_;
+    return true;
+}
+
 // Getters
 
 std::string gate::get_name_() const {
@@ -84,6 +98,14 @@ std::vector<pin *> gate::get_pins_() const {
 
 std::vector<pin *> & gate::get_pins_ref() {
     return pins_;
+}
+
+char gate::get_state_() const {
+    return state_;
+}
+
+char gate::get_next_state_() const {
+    return next_state_;
 }
 
 // Other Methods
@@ -142,6 +164,7 @@ void gate::compute_next_state_or_output(int time, std::string file_name) {
                 file_out << ss.str() << " ";
             }
             file_out << std::endl;
+            update_state();
         }
     }
 }
@@ -149,7 +172,7 @@ void gate::compute_next_state_or_output(int time, std::string file_name) {
 char gate::compute_signal(int pin_index) {
     if (type_ == "evl_dff") {
         assert(pin_index == 0); // must be q
-//        return state_;
+        return state_;
     }
     else if (type_ == "evl_zero") {
         return '0';
@@ -309,4 +332,8 @@ bool gate::validate_structural_semantics() {
             pins_[i]->set_as_input(); 
     }
     return true;
+}
+
+void gate::update_state() {
+    state_ = next_state_;
 }
