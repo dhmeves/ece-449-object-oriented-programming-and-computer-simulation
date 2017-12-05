@@ -62,9 +62,9 @@ public:
 
     bool save(std::string nl_fl, std::string mod_name);
 
-    void compute_next_state_and_output(int time, std::string file_name);
+    void compute_next_state_and_output(std::ofstream &file_out);
     
-    void simulate(int time, std::string file_name);
+    void simulate(int time, std::ofstream &file_out);
 
 }; // class netlist
 

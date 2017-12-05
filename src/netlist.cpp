@@ -181,13 +181,29 @@ bool netlist::save(std::string nl_fl, std::string mod_name) {
 
 // project 4
 
-void netlist::compute_next_state_and_output(int time, std::string file_name) {
+void netlist::compute_next_state_and_output(std::ofstream &file_out) {
     for (net *n: nets_)
         n->set_signal_('?');
-    for (gate *g: gates_)
-        g->compute_next_state_or_output(time, file_name);
+    for (gate *g: gates_) {
+        g->compute_next_state_or_output(file_out);
+        g->update_state();
+    }
 }
 
-void netlist::simulate(int time, std::string file_name) {
-    compute_next_state_and_output(time, file_name);
+void netlist::simulate(int time, std::ofstream &file_out) {
+    for (auto g : gates_) {
+        if (g->get_type_() == "evl_output") {
+            file_out << g->get_pins_ref().size() << std::endl;
+            for (auto p : g->get_pins_ref()) {
+                file_out << p->get_width_() << std::endl;
+            }
+        }
+    }
+    for (int i = 0; i < time; ++i) {
+        std::cout << "About to compute next state and output" << std::endl;
+        compute_next_state_and_output(file_out);
+        for (auto g : gates_) {
+            g->update_state();
+        }
+    }
 }

@@ -136,38 +136,30 @@ bool gate::create_pin(const evl_pin &ep, size_t index, const std::map<std::strin
 
 // project 4
 
-void gate::compute_next_state_or_output(int time, std::string file_name) {
+void gate::compute_next_state_or_output(std::ofstream &file_out) {
     if (type_ == "evl_dff") {
         next_state_ = pins_[1]->compute_signal(); // d
-        update_state();
     }
     else if (type_ == "evl_output") {
         //collect signal from all pins and write to file
-        std::ofstream file_out((file_name+"."+name_+".evl_output").c_str());
-        file_out << pins_.size() << std::endl;
-        for (auto p : pins_) {
-            file_out << p->get_width_() << std::endl;
-        }
-        for (int i = 0; i < time; ++i) {
-            for (auto pin : pins_) {
-                std::string temp;
-                for (auto n : pin->get_net_ptr()) {
-                    temp = temp+n->get_signal();
-                }
-                int result = 0;
-                for (size_t count = 0; count < temp.length() ; ++count) {
-                    result *=2;
-                    result += temp[count]=='1'? 1 :0;
-                }  
-                int temp2 = pin->get_width_();  
-                int rounded_pin_width = temp2/4;
-                rounded_pin_width += temp2 % 4 ? 1 : 0;
-                std::stringstream ss;
-                ss << std::hex << std::setw(rounded_pin_width) << std::setfill('0')  << result;
-                file_out << ss.str() << " ";
+        for (auto pin : pins_) {
+            std::string temp;
+            for (auto n : pin->get_net_ptr()) {
+                temp = temp+n->get_signal();
             }
-            file_out << std::endl;
+            int result = 0;
+            for (size_t count = 0; count < temp.length() ; ++count) {
+                result *=2;
+                result += temp[count]=='1'? 1 :0;
+            }  
+            int temp2 = pin->get_width_();  
+            int rounded_pin_width = temp2/4;
+            rounded_pin_width += temp2 % 4 ? 1 : 0;
+            std::stringstream ss;
+            ss << std::hex << std::setw(rounded_pin_width) << std::setfill('0')  << result;
+            file_out << ss.str() << " ";
         }
+        file_out << std::endl;
     }
 }
 
@@ -337,5 +329,7 @@ bool gate::validate_structural_semantics() {
 }
 
 void gate::update_state() {
-    state_ = next_state_;
+    if (type_ == "evl_dff") {
+        state_ = next_state_;
+    }
 }
