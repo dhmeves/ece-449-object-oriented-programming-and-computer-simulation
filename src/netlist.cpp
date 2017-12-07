@@ -181,15 +181,15 @@ bool netlist::save(std::string nl_fl, std::string mod_name) {
 
 // project 4
 
-void netlist::compute_next_state_and_output(std::ofstream &file_out) {
+void netlist::compute_next_state_and_output(int transition, std::ofstream &file_in, std::ofstream &file_out) {
     for (net *n: nets_)
         n->set_signal_('?');
     for (gate *g: gates_) {
-        g->compute_next_state_or_output(file_out);
+        g->compute_next_state_or_output(transition, file_in, file_out);
     }
 }
 
-void netlist::simulate(int time, std::ofstream &file_out) {
+void netlist::simulate(int time, std::ofstream &file_in, std::ofstream &file_out) {
     for (auto g : gates_) {
         if (g->get_type_() == "evl_output") {
             file_out << g->get_pins_ref().size() << std::endl;
@@ -197,11 +197,18 @@ void netlist::simulate(int time, std::ofstream &file_out) {
                 file_out << p->get_width_() << std::endl;
             }
         }
+        else if (g->get_type_() == "evl_input") {
+            file_in << g->get_pins_ref().size() << " ";
+            for (auto p : g->get_pins_ref()) {
+                file_in << p->get_width_() << " ";
+            }
+            file_in << std::endl;
+        }
     }
     for (int i = 0; i < time; ++i) {
         for (auto g : gates_) {
             g->update_state();
         }
-        compute_next_state_and_output(file_out);
+        compute_next_state_and_output(i, file_in, file_out);
     }
 }

@@ -107,9 +107,10 @@ int main(int argc, char *argv[]) {
 
     std::string nl_sim = std::string(argv[1]);
     for (auto g : nl.get_gates_()) {
-        if (g->get_type_() == "evl_output") {
+        if ((g->get_type_() == "evl_output") || (g->get_type_() == "evl_input")) {
+            std::ofstream file_in((nl_sim+"."+g->get_name_()+".evl_input").c_str());
             std::ofstream file_out((nl_sim+"."+g->get_name_()+".evl_output").c_str());
-            nl.simulate(1000, file_out); // simulate 1000 cycles for Project 4
+            nl.simulate(1000, file_in, file_out); // simulate 1000 cycles for Project 4
         }
     }
 

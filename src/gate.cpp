@@ -137,7 +137,7 @@ bool gate::create_pin(const evl_pin &ep, size_t index, const std::map<std::strin
 
 // project 4
 
-void gate::compute_next_state_or_output(std::ofstream &file_out) {
+void gate::compute_next_state_or_output(int transition, std::ofstream &file_in, std::ofstream &file_out) {
     if (type_ == "evl_dff") {
         next_state_ = pins_[1]->compute_signal(); // d
     }
@@ -163,6 +163,13 @@ void gate::compute_next_state_or_output(std::ofstream &file_out) {
             file_out << ss.str() << " ";
         }
         file_out << std::endl;
+    }
+    else if (type_ == "evl_input") {
+        file_in << transition << " ";
+        for (auto p : pins_) {
+            file_in << p->get_width_() << " ";
+        } 
+        file_in << std::endl;
     }
 }
 
